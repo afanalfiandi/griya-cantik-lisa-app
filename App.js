@@ -16,6 +16,8 @@ import Akun_Screen from './src/pages/Akun/Akun_Screen';
 import Boarding_Screen from './src/pages/Boarding/Boarding_Screen';
 import Login_Screen from './src/pages/Login/Login_Screen';
 import Booking_Screen from './src/pages/Booking/Booking_Screen';
+import PilihLayanan_Screen from './src/pages/PilihLayanan/PilihLayanan_Screen';
+import BookingCheckout_Screen from './src/pages/BookingCheckout/BookingCheckout_Screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -85,6 +87,22 @@ export default function App() {
     {
       name: 'Booking_Screen',
       component: Booking_Screen,
+      title: '',
+      headerShown: false,
+      headerTransparent: true,
+      hideTabBar: true,
+    },
+    {
+      name: 'PilihLayanan_Screen',
+      component: PilihLayanan_Screen,
+      title: '',
+      headerShown: false,
+      headerTransparent: true,
+      hideTabBar: true,
+    },
+    {
+      name: 'BookingCheckout_Screen',
+      component: BookingCheckout_Screen,
       title: '',
       headerShown: false,
       headerTransparent: true,

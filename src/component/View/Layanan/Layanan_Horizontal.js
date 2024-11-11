@@ -10,11 +10,16 @@ import FontStyle from '../../style/FontStyle';
 
 
 
-const Layanan_Horizontal = ({ onPress, iconLayanan, labelLayanan, }) => {
+const Layanan_Horizontal = ({ onPress, iconLayanan, labelLayanan, isFocus }) => {
 
 
     return (
-        <TouchableOpacity style={styles.LayananStyle} onPress={onPress} >
+        <TouchableOpacity style={{
+            ...styles.LayananStyle,
+            backgroundColor: isFocus ? COLORS.white : COLORS.blue_bg,
+            borderWidth: isFocus ? 1 : 0,
+            borderColor: isFocus ? COLORS.cyan : null,
+        }} onPress={onPress} >
             <View style={[styles.LayananIcon_Container]}>
                 <Image source={iconLayanan} style={styles.LayananIcon} />
             </View>
@@ -59,7 +64,7 @@ const styles = StyleSheet.create({
         marginRight: responsiveScreenWidth(2)
     },
     LayananIcon: {
-        width: responsiveScreenWidth(8), height: responsiveScreenWidth(8), tintColor: COLORS.grey_icon
+        width: responsiveScreenWidth(8), height: responsiveScreenWidth(8), tintColor: COLORS.cyan
     },
     LayananLabel: FontStyle.Manrope_Medium_14_Cyan,
 

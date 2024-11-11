@@ -3,22 +3,19 @@ import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, Vie
 import styles from './Booking_Style';
 import ICONS from '../../component/library/icon_library';
 import FontStyle from '../../component/style/FontStyle';
-import Layanan from '../../component/View/Layanan/Layanan';
-import Layanan_Horizontal from '../../component/View/Layanan/Layanan_Horizontal';
 import COLORS from '../../component/library/colors_library';
 import { DATA_HairCare } from '../../component/DATA/DATA_HairCare';
-import { DATA_Kategori } from '../../component/DATA/DATA_Kategori';
 import { createRef, useRef, useState } from 'react';
-import ModalDetailLayanan from '../../component/Modal/ModalDetail/ModalDetail';
 import { DATA_Spesialis } from '../../component/DATA/DATA_Spesialis';
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions';
 import { DATA_waktu } from '../../component/DATA/DATA_waktu';
 import CustomCalendar from '../../component/View/Calendar/CalendarCustom';
-import CustomTextInput from '../../component/Textinput/CustomTextInput';
 import CustomTextArea from '../../component/Textinput/CustomTextArea';
 import ButtonPurple from '../../component/Button/ButtonPurple';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Booking_Screen() {
+    const navigation = useNavigation();
     const [ModalDetail, setModalDetail] = useState(false);
     const [SelectedItem, setSelectedItem] = useState([]);
     const [catatan, setCatatan] = useState('');
@@ -49,7 +46,7 @@ export default function Booking_Screen() {
 
                         <View style={styles.jenisLayananTambah_Container}>
                             <Text style={FontStyle.Manrope_Bold_14}>Jenis Layanan</Text>
-                            <TouchableOpacity style={styles.TambahStyle}>
+                            <TouchableOpacity style={styles.TambahStyle} onPress={() => navigation.navigate('PilihLayanan_Screen')}>
                                 <Image style={styles.btnPlus} source={ICONS.icon_plus} />
                                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>Tambah</Text>
                             </TouchableOpacity>

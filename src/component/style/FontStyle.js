@@ -21,6 +21,11 @@ const FontStyle = StyleSheet.create({
         fontFamily: 'Manrope-Bold',
         fontSize: getFontSize(14)
     },
+    Manrope_Bold_14_Cyan: {
+        fontFamily: 'Manrope-Bold',
+        fontSize: getFontSize(14),
+        color: COLORS.cyan_font
+    },
     Manrope_Bold_10_Cyan: {
         fontFamily: 'Manrope-Bold',
         fontSize: getFontSize(10),
