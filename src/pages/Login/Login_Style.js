@@ -3,8 +3,8 @@ import {
     responsiveHeight, responsiveWidth, responsiveFontSize,
     responsiveScreenHeight, responsiveScreenWidth, responsiveScreenFontSize,
 } from "react-native-responsive-dimensions";
-import COLORS from "../../component/library/colors_library";
-import { getFontSize } from "../../component/helper/helper";
+import COLORS from "../../shared/enum/colors_library";
+import { getFontSize } from "../../shared/helper/helper";
 
 
 const styles = StyleSheet.create({

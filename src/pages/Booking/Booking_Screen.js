@@ -1,46 +1,79 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import styles from './Booking_Style';
-import ICONS from '../../component/library/icon_library';
-import FontStyle from '../../component/style/FontStyle';
-import COLORS from '../../component/library/colors_library';
-import { DATA_HairCare } from '../../component/DATA/DATA_HairCare';
-import { createRef, useRef, useState } from 'react';
-import { DATA_Spesialis } from '../../component/DATA/DATA_Spesialis';
+import ICONS from '../../shared/enum/icon_library';
+import FontStyle from '../../shared/style/FontStyle';
+import COLORS from '../../shared/enum/colors_library';
+import { DATA_HairCare } from '../../shared/services/DATA_HairCare';
+import React, { useEffect, useState, useCallback, createRef } from 'react';
+import { DATA_Spesialis } from '../../shared/services/DATA_Spesialis';
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions';
-import { DATA_waktu } from '../../component/DATA/DATA_waktu';
-import CustomCalendar from '../../component/View/Calendar/CalendarCustom';
-import CustomTextArea from '../../component/Textinput/CustomTextArea';
-import ButtonPurple from '../../component/Button/ButtonPurple';
-import { useNavigation } from '@react-navigation/native';
+import { DATA_waktu } from '../../shared/services/DATA_waktu';
+import CustomCalendar from '../../shared/component/Calendar/CalendarCustom';
+import CustomTextArea from '../../shared/component/Textinput/CustomTextArea';
+import ButtonPurple from '../../shared/component/Button/ButtonPurple';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import HeaderTop from '../../shared/component/Header/Header';
 
-export default function Booking_Screen() {
+export default function Booking_Screen({ route }) {
+    const getData = route.params.data;
     const navigation = useNavigation();
     const [ModalDetail, setModalDetail] = useState(false);
     const [SelectedItem, setSelectedItem] = useState([]);
+
+    const [SelectedLayanan, setSelectedLayanan] = useState([]);
     const [catatan, setCatatan] = useState('');
+    const [Spesialis, setSpesialis] = useState('');
+
     const catatanRef = createRef();
 
+    const addItemToSelectedLayanan = (item) => {
+        setSelectedLayanan(prevLayanan => {
+            if (prevLayanan.some(existingItem => existingItem.id === item.id)) {
+                return prevLayanan;
+            }
+            return [...prevLayanan, item];
+        });
+    };
+
+
+    const removeItemFromSelectedLayanan = (id) => {
+        setSelectedLayanan(prevLayanan => prevLayanan.filter(item => item.id !== id));
+    };
     const toggleModal = () => { setModalDetail(!ModalDetail); };
     const selectItem = (item) => {
         console.log(item);
         setSelectedItem(item);
         toggleModal();
     }
+    const normalizeData = (data) => {
+        if (!Array.isArray(data)) {
+            return [data];
+        }
+        return data;
+    };
+    useFocusEffect(
+        React.useCallback(() => {
+
+            // if (getData) {
+            //     addItemToSelectedLayanan(getData); 
+            // }
+            const normalizedData = normalizeData(getData);
+            normalizedData.forEach(item => addItemToSelectedLayanan(item));
+            console.log(getData)
+
+        }, [getData])
+    );
+
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
 
             <View style={styles.container}>
-                <StatusBar barStyle={"dark-content"} backgroundColor={'white'} />
+                <StatusBar translucent={false} barStyle={"dark-content"} backgroundColor={'white'} />
 
-                <View style={styles.headerContainer}>
-                    <TouchableOpacity style={styles.headerButtonLeft}>
-                        <Image style={styles.btnImage} source={ICONS.icon_left} />
-                    </TouchableOpacity>
-                    <View style={styles.headerTitleContainer}>
-                        <Text style={FontStyle.Manrope_Bold_16}>Booking Layanan</Text>
-                    </View>
-                </View>
+
+                <HeaderTop title={'Booking Layanan'} />
                 <ScrollView>
                     <View style={styles.contentContainer}>
 
@@ -54,28 +87,33 @@ export default function Booking_Screen() {
 
                         <View style={styles.KategoriContainer}>
                             <ScrollView showsVerticalScrollIndicator={false}>
-                                {DATA_HairCare.slice(0, 2).map((item, index) => (
-                                    <TouchableOpacity key={index} style={styles.kategoriBox} onPress={() => selectItem(item)}>
-                                        <View style={styles.kategoriBox_Left}>
-                                            <Image source={item.image} style={styles.kategoriImage} />
-                                        </View>
-                                        <View style={styles.ketegoriBox_Center}>
-                                            <View style={styles.keterangan_Top}>
-                                                <Text style={FontStyle.Manrope_Bold_16}>{item.nama}</Text>
-                                                <View style={styles.keterangan_Bot}>
-                                                    <Text style={FontStyle.Manrope_Bold_16_Cyan}>{item.harga} </Text>
-                                                    <View style={styles.dot} />
-                                                    <Text style={FontStyle.NunitoSans_Regular_12_grey}>{item.kategori}</Text>
+                                {SelectedLayanan.length !== 0 && (
+                                    <>
+                                        {SelectedLayanan.map((item, index) => (
+                                            <TouchableOpacity key={index} style={styles.kategoriBox} onPress={() => selectItem(item)}>
+                                                <View style={styles.kategoriBox_Left}>
+                                                    <Image source={item.image} style={styles.kategoriImage} />
                                                 </View>
-                                            </View>
-                                        </View>
-                                        <View style={styles.ketegoriBox_Right}>
-                                            <TouchableOpacity style={styles.plusminus_style}>
-                                                <Image source={ICONS.icon_minus} style={styles.iconplus_minus} />
+                                                <View style={styles.ketegoriBox_Center}>
+                                                    <View style={styles.keterangan_Top}>
+                                                        <Text style={FontStyle.Manrope_Bold_16}>{item.nama}</Text>
+                                                        <View style={styles.keterangan_Bot}>
+                                                            <Text style={FontStyle.Manrope_Bold_16_Cyan}>{item.harga} </Text>
+                                                            <View style={styles.dot} />
+                                                            <Text style={FontStyle.NunitoSans_Regular_12_grey}>{item.kategori}</Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                                <View style={styles.ketegoriBox_Right}>
+                                                    <TouchableOpacity style={styles.plusminus_style} onPress={() => removeItemFromSelectedLayanan(item.id)}>
+                                                        <Image source={ICONS.icon_minus} style={styles.iconplus_minus} />
+                                                    </TouchableOpacity>
+                                                </View>
                                             </TouchableOpacity>
-                                        </View>
-                                    </TouchableOpacity>
-                                ))}
+                                        ))}
+                                    </>
+                                )}
+
                             </ScrollView>
                         </View>
 
@@ -153,7 +191,7 @@ export default function Booking_Screen() {
 
                     </View>
                     <View style={styles.FloatingBottomRight}>
-                        <ButtonPurple ButtonWidth={53} title={'Booking'} ButtonHeight={55} />
+                        <ButtonPurple ButtonWidth={53} title={'Booking'} ButtonHeight={55} onPress={() => navigation.navigate('BookingCheckout_Screen')} />
                     </View>
                 </View>
             </View>

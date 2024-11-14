@@ -5,11 +5,11 @@ import Home_Screen from './src/pages/Home/Home_Screen';
 import Splash from './src/pages/Splash/Splash_Screen';
 
 import { useFonts } from 'expo-font';
-import { fontImports } from './src/component/library/font_library';
-import { getFontSize } from './src/component/helper/helper';
+import { fontImports } from './src/shared/enum/font_library';
+import { getFontSize } from './src/shared/helper/helper';
 import styles from './App_Style';
-import COLORS from './src/component/library/colors_library';
-import ICONS from './src/component/library/icon_library';
+import COLORS from './src/shared/enum/colors_library';
+import ICONS from './src/shared/enum/icon_library';
 import Explore_Screen from './src/pages/Explore/Explore_Screen';
 import Riwayat_Screen from './src/pages/Riwayat/Riwayat_Screen';
 import Akun_Screen from './src/pages/Akun/Akun_Screen';

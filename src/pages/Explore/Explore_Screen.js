@@ -1,16 +1,15 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import styles from './Explore_Style';
-import ICONS from '../../component/library/icon_library';
-import FontStyle from '../../component/style/FontStyle';
-import Layanan from '../../component/View/Layanan/Layanan';
-import Layanan_Horizontal from '../../component/View/Layanan/Layanan_Horizontal';
-import COLORS from '../../component/library/colors_library';
-import { DATA_HairCare } from '../../component/DATA/DATA_HairCare';
-import { DATA_Kategori } from '../../component/DATA/DATA_Kategori';
+import ICONS from '../../shared/enum/icon_library';
+import FontStyle from '../../shared/style/FontStyle';
+import COLORS from '../../shared/enum/colors_library';
+import { DATA_HairCare } from '../../shared/services/DATA_HairCare';
+import { DATA_Kategori } from '../../shared/services/DATA_Kategori';
 import { useState } from 'react';
-import ModalDetailLayanan from '../../component/Modal/ModalDetail/ModalDetail';
+import ModalDetailLayanan from '../../shared/component/Modal/ModalDetail/ModalDetail';
 import { useNavigation } from '@react-navigation/native';
+import { formatRupiah } from '../../shared/helper/helper';
 
 export default function Explore_Screen() {
     const navigation = useNavigation();
@@ -26,7 +25,7 @@ export default function Explore_Screen() {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <StatusBar barStyle={"dark-content"} backgroundColor={'white'} />
+                <StatusBar translucent={false} barStyle={"dark-content"} backgroundColor={'white'} />
 
                 <View style={styles.KategoriListContainer}>
                     <Text style={FontStyle.Manrope_Bold_16}>Semua Kategori</Text>
@@ -65,9 +64,9 @@ export default function Explore_Screen() {
                                         </Text>
                                     </View>
                                     <View style={styles.keterangan_Bot}>
-                                        <Text style={FontStyle.NunitoSans_Regular_12_grey}>{item.harga}</Text>
+                                        <Text style={FontStyle.NunitoSans_Regular_12_grey}>{formatRupiah(item.harga)}</Text>
 
-                                        <TouchableOpacity style={styles.buttonBoking} onPress={() => navigation.navigate('Booking_Screen')}>
+                                        <TouchableOpacity style={styles.buttonBoking} onPress={() => navigation.navigate('Booking_Screen', { data: item })}>
                                             <Text style={FontStyle.Manrope_Bold_10_Cyan}>Boking</Text>
                                         </TouchableOpacity>
                                     </View>

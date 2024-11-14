@@ -1,15 +1,15 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import styles from './Home_Style';
-import StatusBar_Light from '../../component/View/StatusBar/StatusBar_Light';
-import ICONS from '../../component/library/icon_library';
-import FontStyle from '../../component/style/FontStyle';
-import Layanan from '../../component/View/Layanan/Layanan';
-import Layanan_Horizontal from '../../component/View/Layanan/Layanan_Horizontal';
-import COLORS from '../../component/library/colors_library';
-import { DATA_HairCare } from '../../component/DATA/DATA_HairCare';
-import { DATA_Kategori } from '../../component/DATA/DATA_Kategori';
+import ICONS from '../../shared/enum/icon_library';
+import FontStyle from '../../shared/style/FontStyle';
+import Layanan from '../../shared/component/Layanan/Layanan';
+import Layanan_Horizontal from '../../shared/component/Layanan/Layanan_Horizontal';
+import COLORS from '../../shared/enum/colors_library';
+import { DATA_HairCare } from '../../shared/services/DATA_HairCare';
+import { DATA_Kategori } from '../../shared/services/DATA_Kategori';
 import { useNavigation } from '@react-navigation/native';
+import { formatRupiah } from '../../shared/helper/helper';
 
 
 export default function Home_Screen() {
@@ -19,7 +19,7 @@ export default function Home_Screen() {
 
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.container}>
-                    <StatusBar barStyle={"dark-content"} backgroundColor={'white'} />
+                    <StatusBar translucent={false} barStyle={"dark-content"} backgroundColor={'white'} />
                     <View style={styles.TopContainer}>
                         <View style={styles.TopContainer_Left}>
                             <Text style={FontStyle.Manrope_Bold_24}>Halo, Stefany</Text>
@@ -81,7 +81,7 @@ export default function Home_Screen() {
                                             </Text>
                                         </View>
                                         <View style={styles.keterangan_Bot}>
-                                            <Text style={FontStyle.NunitoSans_Regular_12_grey}>{item.harga}</Text>
+                                            <Text style={FontStyle.NunitoSans_Regular_12_grey}>{formatRupiah(item.harga)}</Text>
 
                                             <TouchableOpacity style={styles.buttonBoking}>
                                                 <Text style={FontStyle.Manrope_Bold_10_Cyan}>Boking</Text>

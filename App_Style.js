@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, PixelRatio, Image } from 'react-native';
-import { getFontSize } from './src/component/helper/helper';
-import COLORS from './src/component/library/colors_library';
+import { getFontSize } from './src/shared/helper/helper';
+import COLORS from './src/shared/enum/colors_library';
 
 
 

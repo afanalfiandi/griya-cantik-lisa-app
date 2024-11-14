@@ -1,25 +1,37 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native';
 import styles from './PilihLayanan_Style';
-import ICONS from '../../component/library/icon_library';
-import FontStyle from '../../component/style/FontStyle';
-import Layanan_Horizontal from '../../component/View/Layanan/Layanan_Horizontal';
-import COLORS from '../../component/library/colors_library';
-import { DATA_HairCare } from '../../component/DATA/DATA_HairCare';
-import { DATA_Kategori } from '../../component/DATA/DATA_Kategori';
+import ICONS from '../../shared/enum/icon_library';
+import FontStyle from '../../shared/style/FontStyle';
+import Layanan_Horizontal from '../../shared/component/Layanan/Layanan_Horizontal';
+import COLORS from '../../shared/enum/colors_library';
+import { DATA_HairCare } from '../../shared/services/DATA_HairCare';
+import { DATA_Kategori } from '../../shared/services/DATA_Kategori';
 import { createRef, useRef, useState } from 'react';
 import { responsiveScreenWidth } from 'react-native-responsive-dimensions';
-import ButtonPurple from '../../component/Button/ButtonPurple';
+import ButtonPurple from '../../shared/component/Button/ButtonPurple';
+
 import { useNavigation } from '@react-navigation/native';
+import { Print_r } from '../../shared/helper/helper';
 
 export default function PilihLayanan_Screen() {
     const navigation = useNavigation();
     const [ModalDetail, setModalDetail] = useState(false);
+    const [SelectedLayanan, setSelectedLayanan] = useState([]);
     const toggleModal = () => { setModalDetail(!ModalDetail); };
     const selectItem = (item) => {
-        console.log(item);
-        setSelectedItem(item);
-        toggleModal();
+        const isSelected = SelectedLayanan.some(selectedItem => selectedItem.id === item.id);
+
+        if (isSelected) {
+
+            setSelectedLayanan(SelectedLayanan.filter(selectedItem => selectedItem.id !== item.id));
+        } else {
+
+            setSelectedLayanan([...SelectedLayanan, item]);
+        }
+    }
+    const calculateTotalPrice = () => {
+        return SelectedLayanan.reduce((total, item) => total + item.harga, 0);
     }
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -60,12 +72,14 @@ export default function PilihLayanan_Screen() {
                                             </View>
                                         </View>
                                         <View style={styles.ketegoriBox_Right}>
-                                            <TouchableOpacity style={item.isLoved ? styles.minus_style : styles.plus_style}>
-                                                <Image source={item.isLoved ? ICONS.icon_minus : ICONS.icon_plus}
+                                            <TouchableOpacity style={SelectedLayanan.some(selectedItem => selectedItem.id === item.id) ? styles.minus_style : styles.plus_style} onPress={() => selectItem(item)}>
+                                                <Image
+                                                    source={SelectedLayanan.some(selectedItem => selectedItem.id === item.id) ? ICONS.icon_minus : ICONS.icon_plus}
                                                     style={{
                                                         ...styles.iconplus_minus,
-                                                        tintColor: item.isLoved ? COLORS.red : COLORS.white
-                                                    }} />
+                                                        tintColor: SelectedLayanan.some(selectedItem => selectedItem.id === item.id) ? COLORS.red : COLORS.white
+                                                    }}
+                                                />
                                             </TouchableOpacity>
                                         </View>
                                     </TouchableOpacity>
@@ -78,12 +92,14 @@ export default function PilihLayanan_Screen() {
 
                 <View style={styles.FloatingBottomContainer}>
                     <View style={styles.FloatingBottomLeft}>
-                        <Text style={FontStyle.Manrope_Bold_14}>Total <Text style={FontStyle.NunitoSans_Regular_14}>(1 Layanan)</Text></Text>
-                        <Text style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}>Rp. 150.000</Text>
+                        <Text style={FontStyle.Manrope_Bold_14}>Total <Text style={FontStyle.NunitoSans_Regular_14}>({SelectedLayanan.length} Layanan)</Text></Text>
+                        <Text style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}>Rp. {calculateTotalPrice().toLocaleString()}</Text>
 
                     </View>
                     <View style={styles.FloatingBottomRight}>
-                        <ButtonPurple ButtonWidth={53} title={'Simpan'} ButtonHeight={55} onPress={() => navigation.navigate('BookingCheckout_Screen')} />
+                        <ButtonPurple ButtonWidth={53} title={'Simpan'} ButtonHeight={55} onPress={() => navigation.navigate('Booking_Screen', {
+                            data: SelectedLayanan
+                        })} />
                     </View>
                 </View>
             </View>

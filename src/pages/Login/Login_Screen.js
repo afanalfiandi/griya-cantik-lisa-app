@@ -5,10 +5,10 @@ import {
 import React, { useRef, useEffect, useState, createRef } from "react";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import styles from "./Login_Style";
-import ICONS from "../../component/library/icon_library.js";
-import ButtonPurple from "../../component/Button/ButtonPurple.js";
-import CustomTextInput from "../../component/Textinput/CustomTextInput.js";
-import FontStyle from "../../component/style/FontStyle.js";
+import ICONS from "../../shared/enum/icon_library.js";
+import ButtonPurple from "../../shared/component/Button/ButtonPurple.js";
+import CustomTextInput from "../../shared/component/Textinput/CustomTextInput.js";
+import FontStyle from "../../shared/style/FontStyle.js";
 import { responsiveScreenHeight } from "react-native-responsive-dimensions";
 
 
@@ -22,7 +22,7 @@ const Login_Screen = () => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
-                <StatusBar barStyle={"dark-content"} backgroundColor={'white'} />
+                <StatusBar translucent={false} barStyle={"dark-content"} backgroundColor={'white'} />
                 <View style={styles.mid_container}>
                     <View style={styles.title_container}>
                         <Text style={FontStyle.Manrope_Bold_24}>Selamat Datang,</Text>

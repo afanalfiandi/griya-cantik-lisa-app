@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, StyleSheet, Text, View } from 'react-native';
-import COLORS from '../../component/library/colors_library';
+import COLORS from '../../shared/enum/colors_library';
 import { useNavigation } from '@react-navigation/native';
 import { useEffect } from 'react';
-import FontStyle from '../../component/style/FontStyle';
+import FontStyle from '../../shared/style/FontStyle';
 
 export default function Splash() {
     const navigation = useNavigation();
@@ -19,7 +19,7 @@ export default function Splash() {
 
     return (
         <View style={styles.container}>
-            <StatusBar barStyle={"dark-content"} backgroundColor={'transparent'} />
+            <StatusBar translucent={true} barStyle={"dark-content"} backgroundColor={'transparent'} />
             <Text style={FontStyle.Manrope_Bold_24_White}>Griya Cantik Lisa</Text>
         </View>
     );

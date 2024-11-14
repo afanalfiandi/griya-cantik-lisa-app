@@ -13,10 +13,10 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { responsiveScreenHeight } from "react-native-responsive-dimensions";
 
-import ICONS from "../../component/library/icon_library";
+import ICONS from "../../shared/enum/icon_library";
 import styles from "./Boarding_Style";
-import FontStyle from "../../component/style/FontStyle";
-import ButtonPurple from "../../component/Button/ButtonPurple";
+import FontStyle from "../../shared/style/FontStyle";
+import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 
 export default function Boarding_Screen() {
     const navigation = useNavigation();
@@ -24,7 +24,7 @@ export default function Boarding_Screen() {
         <SafeAreaView style={{ flex: 1 }}>
             <View style={styles.container}>
                 <ImageBackground style={styles.image_bg} resizeMode="cover" source={ICONS.onBoarding_bgfit2} >
-                    <StatusBar barStyle={"dark-content"} backgroundColor="transparent" />
+                    <StatusBar translucent={true} barStyle={"dark-content"} backgroundColor="transparent" />
 
                     <View style={styles.contentContainer}>
                         <View style={styles.content} >

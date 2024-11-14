@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
-import { getFontSize } from '../../component/helper/helper';
-import COLORS from '../../component/library/colors_library';
+import { getFontSize } from '../../shared/helper/helper';
+import COLORS from '../../shared/enum/colors_library';
 import { responsiveScreenHeight, responsiveScreenWidth, responsiveWidth } from 'react-native-responsive-dimensions';
 
 
@@ -48,11 +48,8 @@ const styles = StyleSheet.create({
         tintColor: COLORS.cyan
     },
     contentContainer: {
-        // flex: 1,
-        // marginTop: 15,
         alignItems: 'center',
-        backgroundColor: 'pink',
-        // paddingBottom: getFontSize(35),
+        // backgroundColor: 'pink',
         paddingVertical: 10
     },
 
@@ -86,77 +83,65 @@ const styles = StyleSheet.create({
     checkoutBox: {
         backgroundColor: COLORS.blue_bg,
         width: responsiveScreenWidth(94),
-        height: responsiveScreenHeight(60),
+        // height: responsiveScreenHeight(60),
         borderRadius: responsiveScreenWidth(5),
         // borderTopRightRadius: responsiveScreenWidth(50),
         // borderTopLeftRadius: responsiveScreenWidth(50),
         // justifyContent: 'center',
         alignItems: 'center',
-        paddingVertical: 10
+        paddingVertical: responsiveScreenWidth(5)
     },
     checkoutBox_Content: {
-        backgroundColor: 'yellow',
+        // backgroundColor: 'yellow',
         width: responsiveScreenWidth(94),
-        // height: responsiveScreenHeight(20),
         borderRadius: responsiveScreenWidth(5),
-        // borderTopRightRadius: responsiveScreenWidth(50),
-        // borderTopLeftRadius: responsiveScreenWidth(50),
         alignItems: 'center'
+    },
 
-    },
-    paddingContainer: {
-        backgroundColor: COLORS.blue_bg,
-        width: responsiveScreenWidth(94),
-        height: responsiveScreenHeight(5),
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    paddingLeft: {
-        backgroundColor: 'white',
-        width: responsiveScreenWidth(5),
-        height: '100%',
-        borderTopRightRadius: responsiveScreenWidth(50),
-        borderBottomRightRadius: responsiveScreenWidth(50)
-    },
-    paddingCenter: {
-        // backgroundColor: 'grey',
-        width: responsiveScreenWidth(80),
-        height: 1,
-        borderWidth: 1,
-        borderColor: COLORS.grey2, // warna garis
-        borderStyle: 'dashed', // garis putus-putus
-    },
-    paddingRight: {
-        backgroundColor: 'white',
-        width: responsiveScreenWidth(5),
-        height: '100%',
-        borderTopLeftRadius: responsiveScreenWidth(50),
-        borderBottomLeftRadius: responsiveScreenWidth(50)
-    },
     row: {
-        backgroundColor: 'grey',
+        // backgroundColor: 'grey',
         width: responsiveScreenWidth(80),
         // height: responsiveScreenHeight(5),
         flexDirection: 'row',
         flexWrap: 'wrap'
     },
-    rowSolid: {
-        backgroundColor: 'red',
-        width: responsiveScreenWidth(40),
-        height: responsiveScreenHeight(15),
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-    },
-    row2: {
-        backgroundColor: 'pink',
-        width: responsiveScreenWidth(80),
-        height: responsiveScreenHeight(5),
-        flexDirection: 'row',
-        justifyContent: 'space-between'
-    },
 
+    Pembayaran: {
+        borderColor: COLORS.cyan,
+        borderWidth: 1,
+        width: responsiveScreenWidth(80),
+        // height: 100,
+        borderRadius: responsiveScreenWidth(50),
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        flexDirection: 'row',
+        // backgroundColor: 'white'
+    },
+    PembayaranImg: {
+        width: responsiveScreenWidth(20),
+        height: 80,
+        // backgroundColor: 'pink',
+        alignItems: 'flex-end',
+        justifyContent: 'center'
+    },
+    pembayaranDetail: {
+        width: responsiveScreenWidth(35),
+        // height: 80,
+        // backgroundColor: 'yellow',
+        justifyContent: 'center'
+    },
+    pembayaranSalin: {
+        width: responsiveScreenWidth(16),
+        // height: 80,
+        // backgroundColor: 'pink',
+        justifyContent: 'center',
+        alignItems: 'flex-start'
+    },
+    payImgStyle: {
+        width: '80%',
+        height: '80%',
+        resizeMode: 'contain'
+    }
 
 
 });
