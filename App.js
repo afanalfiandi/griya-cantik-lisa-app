@@ -1,23 +1,23 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import { Image, View } from 'react-native';
-import Home_Screen from './src/pages/Home/Home_Screen';
-import Splash from './src/pages/Splash/Splash_Screen';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import { Image, View } from "react-native";
+import Home_Screen from "./src/pages/Home/Home_Screen";
+import Splash from "./src/pages/Splash/Splash_Screen";
 
-import { useFonts } from 'expo-font';
-import { fontImports } from './src/shared/enum/font_library';
-import { getFontSize } from './src/shared/helper/helper';
-import styles from './App_Style';
-import COLORS from './src/shared/enum/colors_library';
-import ICONS from './src/shared/enum/icon_library';
-import Explore_Screen from './src/pages/Explore/Explore_Screen';
-import Riwayat_Screen from './src/pages/Riwayat/Riwayat_Screen';
-import Akun_Screen from './src/pages/Akun/Akun_Screen';
-import Boarding_Screen from './src/pages/Boarding/Boarding_Screen';
-import Login_Screen from './src/pages/Login/Login_Screen';
-import Booking_Screen from './src/pages/Booking/Booking_Screen';
-import PilihLayanan_Screen from './src/pages/PilihLayanan/PilihLayanan_Screen';
-import BookingCheckout_Screen from './src/pages/BookingCheckout/BookingCheckout_Screen';
+import { useFonts } from "expo-font";
+import { fontImports } from "./src/shared/enum/font_library";
+import { getFontSize } from "./src/shared/helper/helper";
+import globalStyle from "./src/shared/styles/global.style";
+import COLORS from "./src/shared/enum/colors_library";
+import ICONS from "./src/shared/enum/icon_library";
+import Explore_Screen from "./src/pages/Explore/Explore_Screen";
+import Riwayat_Screen from "./src/pages/Riwayat/Riwayat_Screen";
+import Akun_Screen from "./src/pages/Akun/Akun_Screen";
+import Boarding_Screen from "./src/pages/Boarding/Boarding_Screen";
+import Login_Screen from "./src/pages/Login/Login_Screen";
+import Booking_Screen from "./src/pages/Booking/Booking_Screen";
+import PilihLayanan_Screen from "./src/pages/PilihLayanan/PilihLayanan_Screen";
+import BookingCheckout_Screen from "./src/pages/BookingCheckout/BookingCheckout_Screen";
 
 const Tab = createBottomTabNavigator();
 
@@ -29,81 +29,81 @@ export default function App() {
 
   const tabScreens = [
     {
-      name: 'Home_Screen',
+      name: "Home_Screen",
       component: Home_Screen,
-      title: 'Home',
+      title: "Home",
       showIcon: true,
       iconSource: ICONS.tab_menu_home,
       headerShown: false,
     },
     {
-      name: 'Explore_Screen',
+      name: "Explore_Screen",
       component: Explore_Screen,
-      title: 'Kategori',
+      title: "Kategori",
       showIcon: true,
       iconSource: ICONS.tab_menu_explore,
       headerShown: false,
     },
     {
-      name: 'Riwayat_Screen',
+      name: "Riwayat_Screen",
       component: Riwayat_Screen,
-      title: 'Riwayat',
+      title: "Riwayat",
       showIcon: true,
       iconSource: ICONS.tab_menu_riwayat,
       headerShown: false,
     },
     {
-      name: 'Akun_Screen',
+      name: "Akun_Screen",
       component: Akun_Screen,
-      title: 'Akun',
+      title: "Akun",
       showIcon: true,
       iconSource: ICONS.tab_menu_akun,
       headerShown: false,
     },
     {
-      name: 'Boarding_Screen',
+      name: "Boarding_Screen",
       component: Boarding_Screen,
-      title: '',
+      title: "",
       headerShown: false,
       headerTransparent: true,
       hideTabBar: true,
     },
     {
-      name: 'Login_Screen',
+      name: "Login_Screen",
       component: Login_Screen,
-      title: '',
+      title: "",
       headerShown: false,
       headerTransparent: true,
       hideTabBar: true,
     },
     {
-      name: 'Splash',
+      name: "Splash",
       component: Splash,
-      title: '',
+      title: "",
       headerShown: false,
       headerTransparent: true,
       hideTabBar: true,
     },
     {
-      name: 'Booking_Screen',
+      name: "Booking_Screen",
       component: Booking_Screen,
-      title: '',
+      title: "",
       headerShown: false,
       headerTransparent: true,
       hideTabBar: true,
     },
     {
-      name: 'PilihLayanan_Screen',
+      name: "PilihLayanan_Screen",
       component: PilihLayanan_Screen,
-      title: '',
+      title: "",
       headerShown: false,
       headerTransparent: true,
       hideTabBar: true,
     },
     {
-      name: 'BookingCheckout_Screen',
+      name: "BookingCheckout_Screen",
       component: BookingCheckout_Screen,
-      title: '',
+      title: "",
       headerShown: false,
       headerTransparent: true,
       hideTabBar: true,
@@ -117,7 +117,7 @@ export default function App() {
         screenOptions={{
           headerTitleStyle: {
             fontSize: getFontSize(18),
-            fontFamily: 'Manrope-Bold',
+            fontFamily: "Manrope-Bold",
             color: COLORS.purple,
           },
           headerStyle: {
@@ -125,37 +125,54 @@ export default function App() {
             elevation: 0,
           },
           tabBarShowLabel: false,
-          tabBarStyle: styles.tabBar_Style,
+          tabBarStyle: globalStyle.tabBar_Style,
         }}
       >
         {tabScreens.map((screen, index) => {
           const options = {
             title: screen.title,
-            headerTitleAlign: screen.headerTitleAlign || 'center',
-            headerShown: screen.headerShown !== undefined ? screen.headerShown : true,
+            headerTitleAlign: screen.headerTitleAlign || "center",
+            headerShown:
+              screen.headerShown !== undefined ? screen.headerShown : true,
             headerTransparent: screen.headerTransparent || false,
-            tabBarStyle: screen.hideTabBar ? { display: 'none' } : styles.tabBar_Style,
+            tabBarStyle: screen.hideTabBar
+              ? { display: "none" }
+              : globalStyle.tabBar_Style,
             tabBarButton: screen.hideTabBar ? () => null : undefined,
           };
 
           if (screen.showIcon) {
             options.tabBarIcon = ({ focused }) => (
-              <View style={styles.buttonicon}>
-                <View
-                  style={styles.bgbtnicon} >
+              <View style={globalStyle.buttonicon}>
+                <View style={globalStyle.bgbtnicon}>
                   <Image
                     source={screen.iconSource}
                     resizeMode="contain"
-                    style={{ ...styles.iconStyle, tintColor: focused ? COLORS.purple : COLORS.grey }}
+                    style={{
+                      ...globalStyle.iconStyle,
+                      tintColor: focused ? COLORS.purple : COLORS.grey,
+                    }}
                   />
 
-                  <View style={{ ...styles.dotStyle, backgroundColor: focused ? COLORS.purple : COLORS.white }} />
+                  <View
+                    style={{
+                      ...globalStyle.dotStyle,
+                      backgroundColor: focused ? COLORS.purple : COLORS.white,
+                    }}
+                  />
                 </View>
               </View>
             );
           }
 
-          return <Tab.Screen key={index} name={screen.name} component={screen.component} options={options} />;
+          return (
+            <Tab.Screen
+              key={index}
+              name={screen.name}
+              component={screen.component}
+              options={options}
+            />
+          );
         })}
       </Tab.Navigator>
     </NavigationContainer>
