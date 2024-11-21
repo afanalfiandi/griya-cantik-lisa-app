@@ -19,12 +19,12 @@ export function formatRupiah(number) {
 }
 
 export const calculateTotalPrice = (DATA) => {
-  return DATA.reduce((total, item) => total + item.harga, 0);
+  return DATA.reduce((total, item) => total + item.price, 0);
 };
 
 export const calculateTotalPriceToString = (DATA) => {
   // {calculateTotalPrice().toLocaleString()}
-  return DATA.reduce((total, item) => total + item.harga, 0).toLocaleString();
+  return DATA.reduce((total, item) => total + item.price, 0).toLocaleString();
 };
 
 export const normalizeData = (data) => {
