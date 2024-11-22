@@ -280,7 +280,7 @@ export default function BookingScreen({ route }) {
             {Pembayaran.length !== 0 && (
               <View style={styles.PembayaranImageContainer}>
                 <Image
-                  source={Pembayaran.icon}
+                  source={Pembayaran.img}
                   style={styles.PembayaranImage}
                 />
               </View>
@@ -310,8 +310,8 @@ export default function BookingScreen({ route }) {
             <Text
               style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}
             >
-              {/* Rp. {calculateTotalPriceToString(10000)} */}
-              Rp. 10.000
+              Rp. {calculateTotalPriceToString(SelectedLayanan)}
+
             </Text>
           </View>
           <View style={styles.FloatingBottomRight}>
