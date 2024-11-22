@@ -16,6 +16,7 @@ import {
 } from "react-native-responsive-dimensions";
 import ButtonPurple from "../../Button/ButtonPurple.js";
 import { useFocusEffect } from "@react-navigation/native";
+import { formatRupiah } from "../../../helper/helper.js";
 
 const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
   const scrollViewRef = useRef(null);
@@ -89,6 +90,12 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
                     </TouchableOpacity>
                   ))}
                 </View>
+
+                <View style={styles.closeContainer}>
+                  <TouchableOpacity style={styles.btnClose} onPress={() => onClose()}>
+                    <Image source={ICONS.icon_silang} style={styles.iconSilang} />
+                  </TouchableOpacity>
+                </View>
               </>
             )}
           </View>
@@ -101,7 +108,7 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
                 <Text style={FontStyle.NunitoSans_Regular_16}>30 Menit</Text>
               </View>
 
-              <Text style={FontStyle.Manrope_Bold_24_Cyan}>{data.price}</Text>
+              <Text style={FontStyle.Manrope_Bold_24_Cyan}>{formatRupiah(data.price)}</Text>
             </View>
             <View style={styles.HR_Style} />
 
