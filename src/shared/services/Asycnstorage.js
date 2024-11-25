@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastAndroid } from "react-native";
+import { CustomToast } from "../component/Toast/CustomToast";
 
 const DATA_KEY = "productList";
 const DATA_KEY_riwayat = "riwayat_checkout";
@@ -18,13 +19,13 @@ export const getUserSession = async (setData) => {
 };
 
 // **CREATE**: Tambah Data Baru
-export const addDataLiked = async (newData) => {
+export const addDataLiked = async (newData, toast) => {
   try {
     const existingData = await getDataLiked();
     const updatedData = [...(existingData || []), newData];
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
     console.log("Data berhasil ditambahkan!");
-    ToastAndroid.show("Berhasil ditambahkan ke Disukai!", ToastAndroid.SHORT);
+    CustomToast(toast, "Berhasil ditambahkan ke Disukai!");
   } catch (error) {
     console.error("Gagal menambahkan data:", error);
   }
@@ -42,11 +43,11 @@ export const getDataLiked = async () => {
 };
 
 // **UPDATE**: Perbarui Data Berdasarkan ID
-export const updateDataLiked = async (id, updatedFields) => {
+export const updateDataLiked = async (serviceId, updatedFields) => {
   try {
     const existingData = await getDataLiked();
     const updatedData = existingData.map((item) =>
-      item.id === id ? { ...item, ...updatedFields } : item
+      item.serviceId === serviceId ? { ...item, ...updatedFields } : item
     );
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
     console.log("Data berhasil diperbarui!");
@@ -55,25 +56,26 @@ export const updateDataLiked = async (id, updatedFields) => {
   }
 };
 
-// **DELETE**: Hapus Data Berdasarkan ID
-export const deleteDataLiked = async (id) => {
+// **DELETE**: Hapus Data Berdasarkan serviceId
+export const deleteDataLiked = async (serviceId, toast) => {
   try {
     const existingData = await getDataLiked();
-    const updatedData = existingData.filter((item) => item.id !== id);
+    const updatedData = existingData.filter((item) => item.serviceId !== serviceId);
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
-    ToastAndroid.show("Berhasil dihapus dari Disukai!", ToastAndroid.SHORT);
+    console.log("Data berhasil dihapus!");
+    CustomToast(toast, "Berhasil dihapus dari Disukai!");
   } catch (error) {
     console.error("Gagal menghapus data:", error);
   }
 };
 
-export const addDataRiwayat = async (newData) => {
+export const addDataRiwayat = async (newData, toast) => {
   try {
     const existingData = await getDataRiwayat();
     const updatedData = [...(existingData || []), newData];
     await AsyncStorage.setItem(DATA_KEY_riwayat, JSON.stringify(updatedData));
     console.log("Data berhasil ditambahkan!");
-    ToastAndroid.show("Berhasil ditambahkan!", ToastAndroid.SHORT);
+    CustomToast(toast, "Berhasil ditambahkan!");
   } catch (error) {
     console.error("Gagal menambahkan data:", error);
   }

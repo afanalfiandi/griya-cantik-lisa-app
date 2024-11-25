@@ -33,8 +33,10 @@ import {
 } from "./booking.config";
 import { addDataRiwayat } from "../../shared/services/Asycnstorage";
 import { DATA_waktu } from "../../shared/services/DATA_waktu";
+import { useToast } from "react-native-toast-notifications";
 export default function BookingScreen({ route }) {
   const getData = route.params.data;
+  const toast = useToast();
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
   const [TanggalBooking, setTanggalBooking] = useState("");
@@ -68,7 +70,7 @@ export default function BookingScreen({ route }) {
       catatan: catatan,
       totalHarga: calculateTotalPrice(SelectedLayanan),
     };
-    addDataRiwayat(data);
+    addDataRiwayat(data, toast);
 
     navigation.navigate("CheckoutScreen", {
       data: data,

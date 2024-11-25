@@ -22,10 +22,11 @@ import {
   getDataLiked,
 } from "../../shared/services/Asycnstorage";
 import { DATA_Product } from "../../shared/services/DATA_Product";
+import { useToast } from "react-native-toast-notifications";
 
 export default function ExploreScreen({ route }) {
   const getData = route?.params?.data || null;
-
+  const toast = useToast();
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
   const [selectedKategori, setSelectedKategori] = useState(null);
@@ -54,13 +55,13 @@ export default function ExploreScreen({ route }) {
     // Cek apakah produk sudah di-like
     if (isProductLiked(product.serviceId)) {
       // Jika sudah, hapus dari liked
-      deleteDataLiked(product.serviceId);
+      deleteDataLiked(product.serviceId, toast);
       setLikedProducts((prev) =>
         prev.filter((item) => item.serviceId !== product.id)
       );
     } else {
       // Jika belum, tambahkan ke liked
-      addDataLiked(product);
+      addDataLiked(product, toast);
       setLikedProducts((prev) => [...prev, product]);
     }
   };

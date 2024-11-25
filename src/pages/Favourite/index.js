@@ -20,8 +20,10 @@ import {
   deleteDataLiked,
   getDataLiked,
 } from "../../shared/services/Asycnstorage";
+import { useToast } from "react-native-toast-notifications";
 
 export default function FavouriteScreen() {
+  const toast = useToast();
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
   const [SelectedItem, setSelectedItem] = useState([]);
@@ -74,11 +76,11 @@ export default function FavouriteScreen() {
                     onPress={() => selectItem(item)}
                   >
                     <View style={styles.kategoriBox_Left}>
-                      <Image source={item.image} style={styles.kategoriImage} />
+                      <Image source={item.assets[0].img} style={styles.kategoriImage} />
 
                       <TouchableOpacity
                         style={styles.likeContainer}
-                        onPress={() => deleteDataLiked(item.id)}
+                        onPress={() => deleteDataLiked(item.serviceId, toast)}
                       >
                         <Image
                           source={ICONS.icon_heart}
@@ -92,21 +94,21 @@ export default function FavouriteScreen() {
                     <View style={styles.ketegoriBox_Right}>
                       <View style={styles.keterangan_Top}>
                         <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
-                          {item.kategori}
+                          {item.categoryName}
                         </Text>
                         <Text style={FontStyle.Manrope_Bold_16}>
-                          {item.nama}
+                          {item.serviceName}
                         </Text>
                         <Text
                           style={FontStyle.NunitoSans_Regular_12_grey}
                           numberOfLines={2}
                         >
-                          {item.keterangan}
+                          {item.description}
                         </Text>
                       </View>
                       <View style={styles.keterangan_Bot}>
                         <Text style={FontStyle.NunitoSans_Regular_12_grey}>
-                          {formatRupiah(item.harga)}
+                          {formatRupiah(item.price)}
                         </Text>
 
                         <TouchableOpacity

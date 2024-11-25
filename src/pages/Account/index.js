@@ -10,7 +10,10 @@ import { createRef, useState } from "react";
 import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 import { responsiveScreenHeight } from "react-native-responsive-dimensions";
 import { pickImage } from "./account.config.js";
+import { useToast } from "react-native-toast-notifications";
+import { CustomToast } from "../../shared/component/Toast/CustomToast.js";
 export default function AccountScreen() {
+  const toast = useToast();
   const navigation = useNavigation();
   const [Nama, setNama] = useState("");
   const [Telephone, setTelephone] = useState("");
@@ -23,6 +26,11 @@ export default function AccountScreen() {
     navigation.navigate("AuthenticationScreen");
     AsyncStorage.clear();
   };
+
+  const handleToast = () => {
+    CustomToast(toast, 'Berhasil di tambahkan');
+  }
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
@@ -44,7 +52,9 @@ export default function AccountScreen() {
       </View>
 
 
-      <ButtonPurple title={'Simpan'} ButtonMarginTop={responsiveScreenHeight(15)} ButtonHeight={55} />
+      <ButtonPurple title={'Simpan'} ButtonMarginTop={responsiveScreenHeight(15)} ButtonHeight={55}
+        onPress={() => handleToast()}
+      />
 
 
     </View >
