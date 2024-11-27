@@ -21,7 +21,7 @@ export default function App() {
     const options = {
       title: screen.title,
       headerTitleAlign: screen.headerTitleAlign ?? "center",
-      headerShown: screen.headerShown ? screen.headerShown : true,
+      headerShown: screen.headerShown ? screen.headerShown : false,
       headerTransparent: screen.headerTransparent ?? false,
       tabBarStyle: screen.hideTabBar
         ? mainStyle.hideTabBar

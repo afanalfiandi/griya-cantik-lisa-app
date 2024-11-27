@@ -96,6 +96,28 @@ const styles = StyleSheet.create({
   inactiveIndicator: {
     backgroundColor: COLORS.grey2,
   },
+  closeContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+
+    position: "absolute",
+    top: 10,
+    width: responsiveScreenWidth(100),
+    paddingHorizontal: 5
+  },
+  btnClose: {
+    height: getFontSize(30),
+    width: getFontSize(30),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.blackTransparent,
+    borderRadius: 200
+  },
+  iconSilang: {
+    width: '70%',
+    height: '70%',
+    tintColor: COLORS.white
+  }
 });
 
 export default styles;

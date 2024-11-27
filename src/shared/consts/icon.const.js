@@ -21,6 +21,7 @@ const ICONS = {
   icon_minus: require("./../../assets/images/icons/icon_minus.png"),
   icon_left: require("./../../assets/images/icons/icon_left.png"),
   icon_right: require("./../../assets/images/icons/icon_right.png"),
+  icon_silang: require("./../../assets/images/icons/icon_silang.png"),
   icon_check: require("./../../assets/images/icons/icon_check.png"),
   pay_mandiri: require("./../../assets/images/icons/pay_mandiri.png"),
   pay_bni: require("./../../assets/images/icons/pay_bni.png"),

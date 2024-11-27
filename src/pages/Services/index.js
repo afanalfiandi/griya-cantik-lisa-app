@@ -31,22 +31,22 @@ export default function ServicesScreen() {
   };
   const selectItem = (item) => {
     const isSelected = SelectedLayanan.some(
-      (selectedItem) => selectedItem.id === item.id
+      (selectedItem) => selectedItem.serviceId === item.serviceId
     );
 
     if (isSelected) {
       setSelectedLayanan(
-        SelectedLayanan.filter((selectedItem) => selectedItem.id !== item.id)
+        SelectedLayanan.filter((selectedItem) => selectedItem.serviceId !== item.serviceId)
       );
     } else {
       setSelectedLayanan([...SelectedLayanan, item]);
     }
   };
   const calculateTotalPrice = () => {
-    return SelectedLayanan.reduce((total, item) => total + item.harga, 0);
+    return SelectedLayanan.reduce((total, item) => total + item.price, 0);
   };
   const filteredProducts = selectedKategori
-    ? DATA_Product.filter((product) => product.kategori_id === selectedKategori)
+    ? DATA_Product.filter((product) => product.categoryId === selectedKategori)
     : DATA_Product;
   useFocusEffect(
     React.useCallback(() => {
@@ -73,15 +73,15 @@ export default function ServicesScreen() {
                   <Layanan_Horizontal
                     key={index}
                     iconLayanan={item.icon}
-                    labelLayanan={item.nama_kategori}
+                    labelLayanan={item.categoryName}
                     isFocus={
-                      selectedKategori === item.id_kategori ? true : null
+                      selectedKategori === item.categoryId ? true : null
                     }
                     onPress={() => {
                       setSelectedKategori(
-                        selectedKategori === item.id_kategori
+                        selectedKategori === item.categoryId
                           ? null
-                          : item.id_kategori
+                          : item.categoryId
                       );
                     }}
                   />
@@ -98,15 +98,15 @@ export default function ServicesScreen() {
                     onPress={() => selectItem(item)}
                   >
                     <View style={styles.kategoriBox_Left}>
-                      <Image source={item.image} style={styles.kategoriImage} />
+                      <Image source={item.assets[0].img} style={styles.kategoriImage} />
                     </View>
                     <View style={styles.ketegoriBox_Center}>
                       <View style={styles.keterangan_Top}>
                         <Text style={FontStyle.Manrope_Bold_16}>
-                          {item.nama}
+                          {item.categoryName}
                         </Text>
                         <Text style={FontStyle.Manrope_Bold_16_Cyan}>
-                          {formatRupiah(item.harga)}{" "}
+                          {formatRupiah(item.price)}{" "}
                         </Text>
                         <Text
                           style={{
@@ -115,7 +115,7 @@ export default function ServicesScreen() {
                           }}
                           numberOfLines={2}
                         >
-                          {item.keterangan}{" "}
+                          {item.description}{" "}
                         </Text>
                       </View>
                     </View>
@@ -123,7 +123,7 @@ export default function ServicesScreen() {
                       <TouchableOpacity
                         style={
                           SelectedLayanan.some(
-                            (selectedItem) => selectedItem.id === item.id
+                            (selectedItem) => selectedItem.serviceId === item.serviceId
                           )
                             ? styles.minus_style
                             : styles.plus_style
@@ -133,7 +133,7 @@ export default function ServicesScreen() {
                         <Image
                           source={
                             SelectedLayanan.some(
-                              (selectedItem) => selectedItem.id === item.id
+                              (selectedItem) => selectedItem.serviceId === item.serviceId
                             )
                               ? ICONS.icon_minus
                               : ICONS.icon_plus
@@ -141,7 +141,7 @@ export default function ServicesScreen() {
                           style={{
                             ...styles.iconplus_minus,
                             tintColor: SelectedLayanan.some(
-                              (selectedItem) => selectedItem.id === item.id
+                              (selectedItem) => selectedItem.serviceId === item.serviceId
                             )
                               ? COLORS.red
                               : COLORS.white,

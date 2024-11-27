@@ -92,7 +92,7 @@ export default function CheckoutScreen({ route }) {
 
                 <CheckoutContainerHorizontal
                   title={"Sub Total"}
-                  label={formatRupiah(10000)}
+                  label={formatRupiah(getData.totalHarga)}
                 />
 
                 <LineHorizontal
@@ -104,13 +104,13 @@ export default function CheckoutScreen({ route }) {
                 <View style={styles.Pembayaran}>
                   <View style={styles.PembayaranImg}>
                     <Image
-                      source={getData.jenisPembayaran.icon}
+                      source={getData.jenisPembayaran.img}
                       style={styles.payImgStyle}
                     />
                   </View>
                   <View style={styles.pembayaranDetail}>
                     <Text style={FontStyle.Manrope_Bold_14}>
-                      {getData.jenisPembayaran.nama_payment}
+                      {getData.jenisPembayaran.paymentMethodName}
                     </Text>
                     <Text style={FontStyle.NunitoSans_Regular_14}>
                       28927386289928
