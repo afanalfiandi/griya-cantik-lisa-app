@@ -1,4 +1,3 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   Image,
   SafeAreaView,
@@ -20,20 +19,43 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah, Print_r } from "../../shared/helper/helper";
 import React, { useState } from "react";
 import { getUserSession } from "../../shared/services/Asycnstorage";
-import { testFetch } from "../../shared/services/test.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getServiceCategory } from "../../shared/services/service_category";
+import UserSessionUtils from "../../shared/utils/user-session.utils";
+import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
   const [userData, setUserData] = useState([]);
+  const [serviceCategoryData, setServiceCategoryData] = useState([]);
+
+  const onClear = async () => {
+    AsyncStorage.removeItem("user_session");
+  };
 
   useFocusEffect(
     React.useCallback(() => {
-      testFetch().then((res) => {
-        console.log(res);
-      });
+      initData();
       getUserSession(setUserData);
     }, [])
   );
+
+  const getUser = async () => {
+    const data = JSON.parse(await UserSessionUtils.getUserSession());
+
+    setUserData(data);
+  };
+
+  const initData = async () => {
+    getUser();
+    onGetServiceCategory();
+  };
+
+  const onGetServiceCategory = () => {
+    getServiceCategory().then((data) => {
+      setServiceCategoryData(data.data);
+    });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -47,7 +69,7 @@ export default function HomeScreen() {
           <View style={styles.TopContainer}>
             <View style={styles.TopContainer_Left}>
               <Text style={FontStyle.Manrope_Bold_24} numberOfLines={1}>
-                Halo, {userData[0]?.nama_user || "stefany"}
+                Halo, {userData.firstName}
               </Text>
               <Text
                 style={{ ...FontStyle.NunitoSans_Regular_14, marginTop: 5 }}
@@ -56,9 +78,7 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View style={styles.TopContainer_Right}>
-              <TouchableOpacity
-                onPress={() => navigation.navigate("FavouriteScreen")}
-              >
+              <TouchableOpacity onPress={onClear}>
                 <Image
                   source={ICONS.icon_heart}
                   style={styles.icon_Heart_style}
@@ -78,16 +98,17 @@ export default function HomeScreen() {
           <View style={styles.LayananContainer}>
             <Text style={FontStyle.Manrope_Bold_16}>Layanan</Text>
             <View style={styles.LayananList}>
-              {DATA_Kategori.map((item, index) => (
-                <Layanan
-                  key={index}
-                  iconLayanan={item.icon}
-                  labelLayanan={item.categoryName}
-                  onPress={() =>
-                    navigation.navigate("ExploreScreen", { data: item })
-                  }
-                />
-              ))}
+              {serviceCategoryData &&
+                serviceCategoryData.map((item, index) => (
+                  <Layanan
+                    key={index}
+                    iconLayanan={item.img}
+                    labelLayanan={item.serviceCategoryName}
+                    onPress={() =>
+                      navigation.navigate("ExploreScreen", { data: item })
+                    }
+                  />
+                ))}
             </View>
           </View>
 
@@ -95,13 +116,14 @@ export default function HomeScreen() {
             <Text style={FontStyle.Manrope_Bold_16}>Paling Dicari</Text>
             <View style={styles.LayananList_Horizontal}>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-                {DATA_Kategori.map((item, index) => (
-                  <Layanan_Horizontal
-                    key={index}
-                    iconLayanan={item.icon}
-                    labelLayanan={item.categoryName}
-                  />
-                ))}
+                {serviceCategoryData &&
+                  serviceCategoryData.map((item, index) => (
+                    <Layanan_Horizontal
+                      key={index}
+                      iconLayanan={item.img}
+                      labelLayanan={item.serviceCategoryName}
+                    />
+                  ))}
               </ScrollView>
             </View>
           </View>

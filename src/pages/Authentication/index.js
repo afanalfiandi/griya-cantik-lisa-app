@@ -9,6 +9,7 @@ import FontStyle from "../../shared/style/font.style.js";
 import { responsiveScreenHeight } from "react-native-responsive-dimensions";
 import { authService } from "./service.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import UserSessionUtils from "../../shared/utils/user-session.utils.js";
 
 const AuthenticationScreen = () => {
   const navigation = useNavigation();
@@ -28,8 +29,8 @@ const AuthenticationScreen = () => {
       if (result) {
         setIsLoading(false);
         if (result.status == "success") {
-          const data = result.data;
-          await AsyncStorage.setItem("user_session", JSON.stringify(data));
+          const data = JSON.stringify(result.data);
+          await UserSessionUtils.setUserSession(data);
 
           navigation.navigate("HomeScreen");
         } else {

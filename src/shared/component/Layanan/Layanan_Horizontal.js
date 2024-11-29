@@ -6,6 +6,7 @@ import {
 } from "react-native-responsive-dimensions";
 import COLORS from "../../consts/colors.const";
 import FontStyle from "../../style/font.style";
+import { SERVICE_CATEGORY_MEDIA_BASE_URL } from "../../consts/base-url.const";
 
 const Layanan_Horizontal = ({
   onPress,
@@ -24,7 +25,12 @@ const Layanan_Horizontal = ({
       onPress={onPress}
     >
       <View style={[styles.LayananIcon_Container]}>
-        <Image source={iconLayanan} style={styles.LayananIcon} />
+        <Image
+          source={{
+            uri: `${SERVICE_CATEGORY_MEDIA_BASE_URL}${iconLayanan}`,
+          }}
+          style={styles.LayananIcon}
+        />
       </View>
       <Text
         style={{

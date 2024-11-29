@@ -4,12 +4,18 @@ import { responsiveScreenWidth } from "react-native-responsive-dimensions";
 import COLORS from "../../consts/colors.const";
 import { getFontSize } from "../../helper/helper";
 import FontStyle from "../../style/font.style";
+import { SERVICE_CATEGORY_MEDIA_BASE_URL } from "../../consts/base-url.const";
 
 const Layanan = ({ onPress, iconLayanan, labelLayanan }) => {
   return (
     <TouchableOpacity style={styles.LayananStyle} onPress={onPress}>
       <View style={[styles.LayananIcon_Container]}>
-        <Image source={iconLayanan} style={styles.LayananIcon} />
+        <Image
+          source={{
+            uri: `${SERVICE_CATEGORY_MEDIA_BASE_URL}${iconLayanan}`,
+          }}
+          style={styles.LayananIcon}
+        />
       </View>
       <Text
         style={{ ...styles.LayananLabel, textAlign: "center" }}

@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import FontStyle from "../../shared/style/font.style";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { styles } from "./style";
+import UserSessionUtils from "../../shared/utils/user-session.utils";
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ export default function SplashScreen() {
 
   const navig = async () => {
     setTimeout(async () => {
-      const loggedIn = await AsyncStorage.getItem("user_session");
+      const loggedIn = await UserSessionUtils.getUserSession();
       if (!!loggedIn) {
         navigation.navigate("HomeScreen");
       } else {
