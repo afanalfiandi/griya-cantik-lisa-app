@@ -133,7 +133,9 @@ export default function HomeScreen() {
                     iconLayanan={item.img}
                     labelLayanan={item.serviceCategoryName}
                     onPress={() =>
-                      navigation.navigate("ExploreScreen", { data: item })
+                      navigation.navigate("ExploreScreen", {
+                        data: item.serviceCategoryId,
+                      })
                     }
                   />
                 ))}
