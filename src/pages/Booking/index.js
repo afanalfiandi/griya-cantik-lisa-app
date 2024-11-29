@@ -33,6 +33,7 @@ import {
 } from "./booking.config";
 import { addDataRiwayat } from "../../shared/services/Asycnstorage";
 import { DATA_waktu } from "../../shared/services/DATA_waktu";
+import { SERVICE_MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 export default function BookingScreen({ route }) {
   const getData = route.params.data;
   const navigation = useNavigation();
@@ -119,7 +120,9 @@ export default function BookingScreen({ route }) {
                       >
                         <View style={styles.kategoriBox_Left}>
                           <Image
-                            source={item.assets[0].img}
+                            source={{
+                              uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                            }}
                             style={styles.kategoriImage}
                           />
                         </View>
@@ -136,7 +139,7 @@ export default function BookingScreen({ route }) {
                               <Text
                                 style={FontStyle.NunitoSans_Regular_12_grey}
                               >
-                                {item.categoryName}
+                                {item.serviceCategoryName}
                               </Text>
                             </View>
                           </View>
@@ -146,7 +149,7 @@ export default function BookingScreen({ route }) {
                             style={styles.plusminus_style}
                             onPress={() =>
                               removeItemFromSelectedLayanan(
-                                item.serviceId,
+                                item.serviceID,
                                 setSelectedLayanan
                               )
                             }
@@ -279,10 +282,7 @@ export default function BookingScreen({ route }) {
 
             {Pembayaran.length !== 0 && (
               <View style={styles.PembayaranImageContainer}>
-                <Image
-                  source={Pembayaran.img}
-                  style={styles.PembayaranImage}
-                />
+                <Image source={Pembayaran.img} style={styles.PembayaranImage} />
               </View>
             )}
 
@@ -311,7 +311,6 @@ export default function BookingScreen({ route }) {
               style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}
             >
               Rp. {calculateTotalPriceToString(SelectedLayanan)}
-
             </Text>
           </View>
           <View style={styles.FloatingBottomRight}>

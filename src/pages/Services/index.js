@@ -20,12 +20,20 @@ import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah, Print_r } from "../../shared/helper/helper";
 import { DATA_Product } from "../../shared/services/DATA_Product";
+import { getServiceCategory } from "../../shared/services/service_category";
+import ServicesService from "../../shared/services/services.service";
 
 export default function ServicesScreen() {
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
   const [selectedKategori, setSelectedKategori] = useState(null);
   const [SelectedLayanan, setSelectedLayanan] = useState([]);
+
+  const [serviceCategory, setServiceCategory] = useState([]);
+  const [servicesData, setServicesData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedCategoryLabel, setSelectedCategoryLabel] = useState();
+
   const toggleModal = () => {
     setModalDetail(!ModalDetail);
   };
@@ -36,7 +44,9 @@ export default function ServicesScreen() {
 
     if (isSelected) {
       setSelectedLayanan(
-        SelectedLayanan.filter((selectedItem) => selectedItem.serviceId !== item.serviceId)
+        SelectedLayanan.filter(
+          (selectedItem) => selectedItem.serviceId !== item.serviceId
+        )
       );
     } else {
       setSelectedLayanan([...SelectedLayanan, item]);
@@ -51,8 +61,27 @@ export default function ServicesScreen() {
   useFocusEffect(
     React.useCallback(() => {
       setSelectedKategori(1);
+      initData();
     }, [])
   );
+
+  const initData = () => {
+    onGetServiceCategory();
+    getServiceByCategory();
+  };
+  const onGetServiceCategory = () => {
+    getServiceCategory().then((data) => {
+      setServiceCategory(data.data);
+      setSelectedCategory(data.data[0].serviceCategoryId);
+      setSelectedCategoryLabel(data.data[0].serviceCategoryId);
+    });
+  };
+
+  const getServiceByCategory = (selectedCategory) => {
+    ServicesService.getServices(selectedCategory, true).then((res) => {
+      setServicesData(res.data);
+    });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -69,23 +98,26 @@ export default function ServicesScreen() {
           <View style={styles.contentContainer}>
             <View style={styles.LayananList_Horizontal}>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-                {DATA_Kategori.map((item, index) => (
-                  <Layanan_Horizontal
-                    key={index}
-                    iconLayanan={item.icon}
-                    labelLayanan={item.categoryName}
-                    isFocus={
-                      selectedKategori === item.categoryId ? true : null
-                    }
-                    onPress={() => {
-                      setSelectedKategori(
-                        selectedKategori === item.categoryId
-                          ? null
-                          : item.categoryId
-                      );
-                    }}
-                  />
-                ))}
+                {serviceCategory &&
+                  serviceCategory.map((item, index) => (
+                    <Layanan_Horizontal
+                      key={index}
+                      iconLayanan={item.icon}
+                      labelLayanan={item.serviceCategoryName}
+                      isFocus={
+                        selectedKategori === item.serviceCategoryId
+                          ? true
+                          : null
+                      }
+                      onPress={() => {
+                        setSelectedKategori(
+                          selectedKategori === item.serviceCategoryId
+                            ? null
+                            : item.serviceCategoryId
+                        );
+                      }}
+                    />
+                  ))}
               </ScrollView>
             </View>
 
@@ -98,12 +130,15 @@ export default function ServicesScreen() {
                     onPress={() => selectItem(item)}
                   >
                     <View style={styles.kategoriBox_Left}>
-                      <Image source={item.assets[0].img} style={styles.kategoriImage} />
+                      <Image
+                        source={item.img[0].img}
+                        style={styles.kategoriImage}
+                      />
                     </View>
                     <View style={styles.ketegoriBox_Center}>
                       <View style={styles.keterangan_Top}>
                         <Text style={FontStyle.Manrope_Bold_16}>
-                          {item.categoryName}
+                          {item.serviceCategoryName}
                         </Text>
                         <Text style={FontStyle.Manrope_Bold_16_Cyan}>
                           {formatRupiah(item.price)}{" "}
@@ -123,7 +158,8 @@ export default function ServicesScreen() {
                       <TouchableOpacity
                         style={
                           SelectedLayanan.some(
-                            (selectedItem) => selectedItem.serviceId === item.serviceId
+                            (selectedItem) =>
+                              selectedItem.serviceID === item.serviceID
                           )
                             ? styles.minus_style
                             : styles.plus_style
@@ -133,7 +169,8 @@ export default function ServicesScreen() {
                         <Image
                           source={
                             SelectedLayanan.some(
-                              (selectedItem) => selectedItem.serviceId === item.serviceId
+                              (selectedItem) =>
+                                selectedItem.serviceID === item.serviceID
                             )
                               ? ICONS.icon_minus
                               : ICONS.icon_plus
@@ -141,7 +178,8 @@ export default function ServicesScreen() {
                           style={{
                             ...styles.iconplus_minus,
                             tintColor: SelectedLayanan.some(
-                              (selectedItem) => selectedItem.serviceId === item.serviceId
+                              (selectedItem) =>
+                                selectedItem.serviceID === item.serviceID
                             )
                               ? COLORS.red
                               : COLORS.white,

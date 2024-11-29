@@ -33,7 +33,7 @@ export default function HomeScreen() {
   const [bannerData, setBannerData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState();
   const [mostLookedFor, setMostLookedFor] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const onFavourite = async () => {
     navigation.navigate("FavouriteScreen");
   };
@@ -73,6 +73,7 @@ export default function HomeScreen() {
 
   const onGetServiceByCategory = (params) => {
     ServicesService.getServices(params, true).then((res) => {
+      setIsLoading(true);
       setMostLookedFor(res.data);
     });
   };
@@ -226,6 +227,12 @@ export default function HomeScreen() {
               {mostLookedFor.length == 0 && (
                 <View style={[styles.noDataWrapper]}>
                   <Text>There is no data</Text>
+                </View>
+              )}
+
+              {isLoading && (
+                <View style={[styles.noDataWrapper]}>
+                  <Text>Loading...</Text>
                 </View>
               )}
             </ScrollView>
