@@ -13,11 +13,11 @@ export default function SplashScreen() {
 
   const navig = async () => {
     setTimeout(async () => {
-      const loggedIn = await AsyncStorage.getItem("login_session");
-      if (loggedIn != 1) {
-        navigation.navigate("AuthenticationScreen");
-      } else {
+      const loggedIn = await AsyncStorage.getItem("user_session");
+      if (!!loggedIn) {
         navigation.navigate("HomeScreen");
+      } else {
+        navigation.navigate("AuthenticationScreen");
       }
     }, 2000);
   };

@@ -1,4 +1,4 @@
-import { Text, View, StatusBar, SafeAreaView } from "react-native";
+import { Text, View, StatusBar, SafeAreaView, Alert } from "react-native";
 import React, { useState, createRef } from "react";
 import { useNavigation } from "@react-navigation/native";
 import styles from "./style.js";
@@ -7,7 +7,8 @@ import ButtonPurple from "../../shared/component/Button/ButtonPurple.js";
 import CustomTextInput from "../../shared/component/Textinput/CustomTextInput.js";
 import FontStyle from "../../shared/style/font.style.js";
 import { responsiveScreenHeight } from "react-native-responsive-dimensions";
-import { handleLogin } from "./login.config.js";
+import { authService } from "./service.js";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const AuthenticationScreen = () => {
   const navigation = useNavigation();
@@ -15,6 +16,31 @@ const AuthenticationScreen = () => {
   const [password, setPassword] = useState("");
   const userNameInputRef = createRef();
   const userPasswordInputRef = createRef();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onAuth = async () => {
+    setIsLoading(true);
+    const payload = { username, password };
+
+    try {
+      const result = await authService(payload);
+
+      if (result) {
+        setIsLoading(false);
+        if (result.status == "success") {
+          const data = result.data;
+          await AsyncStorage.setItem("user_session", JSON.stringify(data));
+
+          navigation.navigate("HomeScreen");
+        } else {
+          Alert.alert("Username atau kata sandi salah");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Terjadi kesalahan pada server");
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -52,9 +78,9 @@ const AuthenticationScreen = () => {
 
             <ButtonPurple
               ButtonHeight={60}
-              title={"Masuk"}
+              title={isLoading ? "Loading..." : "Masuk"}
               ButtonMarginTop={responsiveScreenHeight(20)}
-              onPress={() => handleLogin(username, password, navigation)}
+              onPress={onAuth}
             />
           </View>
         </View>

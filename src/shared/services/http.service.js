@@ -10,10 +10,6 @@ export const get = async (endpoint) => {
       },
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -31,10 +27,6 @@ export const post = async (endpoint, payload, config = {}) => {
       },
       body: JSON.stringify(payload),
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
-    }
 
     const data = await response.json();
     return data;
@@ -54,10 +46,6 @@ export const put = async (endpoint, payload, config = {}) => {
       body: JSON.stringify(payload),
     });
 
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
-    }
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -74,10 +62,6 @@ export const remove = async (endpoint, config = {}) => {
         "Content-Type": "application/json",
       },
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP Error: ${response.status}`);
-    }
 
     const data = await response.json();
     return data;
