@@ -10,13 +10,8 @@ const UserSessionUtils = {
   },
 
   async getUserSession() {
-    try {
-      const value = await AsyncStorage.getItem("user_session");
-      return JSON.parse(value);
-    } catch (error) {
-      console.error("Failed to get user session", error);
-      return null;
-    }
+    const value = await AsyncStorage.getItem("user_session");
+    return JSON.parse(value);
   },
 
   async removeUserSession() {

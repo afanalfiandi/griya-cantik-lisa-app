@@ -5,15 +5,13 @@ import ICONS from "../../consts/icon.const";
 import { useNavigation } from "@react-navigation/native";
 import { styles } from "./style";
 
-const HeaderTop = ({ title, NavigateTo }) => {
+const HeaderTop = ({ title, route }) => {
   const navigation = useNavigation();
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity
         style={styles.headerButtonLeft}
-        onPress={() =>
-          navigation.navigate(NavigateTo ? NavigateTo : "HomeScreen")
-        }
+        onPress={() => navigation.navigate(route)}
       >
         <Image style={styles.btnImage} source={ICONS.icon_left} />
       </TouchableOpacity>

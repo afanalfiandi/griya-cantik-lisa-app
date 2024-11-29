@@ -14,31 +14,41 @@ import Layanan from "../../shared/component/Layanan/Layanan";
 import Layanan_Horizontal from "../../shared/component/Layanan/Layanan_Horizontal";
 import COLORS from "../../shared/consts/colors.const";
 import { DATA_HairCare } from "../../shared/services/DATA_HairCare";
-import { DATA_Kategori } from "../../shared/services/DATA_Kategori";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah, Print_r } from "../../shared/helper/helper";
 import React, { useState } from "react";
-import { getUserSession } from "../../shared/services/Asycnstorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getServiceCategory } from "../../shared/services/service_category";
 import UserSessionUtils from "../../shared/utils/user-session.utils";
-import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
+import HomeService from "./home.service";
+import {
+  BANNER_MEDIA_BASE_URL,
+  SERVICE_MEDIA_BASE_URL,
+} from "../../shared/consts/base-url.const";
+import ServicesService from "../../shared/services/services.service";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState(null);
   const [serviceCategoryData, setServiceCategoryData] = useState([]);
+  const [bannerData, setBannerData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState();
+  const [mostLookedFor, setMostLookedFor] = useState([]);
 
-  const onClear = async () => {
-    AsyncStorage.removeItem("user_session");
+  const onFavourite = async () => {
+    navigation.navigate("FavouriteScreen");
   };
 
   useFocusEffect(
     React.useCallback(() => {
       initData();
-      getUserSession(setUserData);
     }, [])
   );
+
+  const initData = () => {
+    getUser();
+    onGetServiceCategory();
+    onGetBanner();
+  };
 
   const getUser = async () => {
     const data = JSON.parse(await UserSessionUtils.getUserSession());
@@ -46,17 +56,27 @@ export default function HomeScreen() {
     setUserData(data);
   };
 
-  const initData = async () => {
-    getUser();
-    onGetServiceCategory();
-  };
-
   const onGetServiceCategory = () => {
     getServiceCategory().then((data) => {
+      setSelectedCategory(data.data[0].serviceCategoryId);
       setServiceCategoryData(data.data);
+
+      onGetServiceByCategory(selectedCategory);
     });
   };
 
+  const onGetBanner = () => {
+    HomeService.getBanner().then((res) => {
+      setBannerData(res.data);
+    });
+  };
+
+  const onGetServiceByCategory = (params) => {
+    ServicesService.getServices(params, true).then((res) => {
+      console.log(res.data[0].img);
+      setMostLookedFor(res.data);
+    });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -69,7 +89,7 @@ export default function HomeScreen() {
           <View style={styles.TopContainer}>
             <View style={styles.TopContainer_Left}>
               <Text style={FontStyle.Manrope_Bold_24} numberOfLines={1}>
-                Halo, {userData.firstName}
+                Halo, {userData != null ? userData.firstName : ""}
               </Text>
               <Text
                 style={{ ...FontStyle.NunitoSans_Regular_14, marginTop: 5 }}
@@ -78,7 +98,7 @@ export default function HomeScreen() {
               </Text>
             </View>
             <View style={styles.TopContainer_Right}>
-              <TouchableOpacity onPress={onClear}>
+              <TouchableOpacity onPress={onFavourite}>
                 <Image
                   source={ICONS.icon_heart}
                   style={styles.icon_Heart_style}
@@ -89,9 +109,18 @@ export default function HomeScreen() {
 
           <View style={styles.CardContainer}>
             <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-              <Image source={ICONS.card_1} style={styles.CardStyle} />
-              <Image source={ICONS.card_1} style={styles.CardStyle} />
-              <Image source={ICONS.card_1} style={styles.CardStyle} />
+              {bannerData &&
+                bannerData.map((item, index) => {
+                  return (
+                    <Image
+                      key={index}
+                      source={{
+                        uri: `${BANNER_MEDIA_BASE_URL}${item.img}`,
+                      }}
+                      style={styles.CardStyle}
+                    />
+                  );
+                })}
             </ScrollView>
           </View>
 
@@ -118,11 +147,23 @@ export default function HomeScreen() {
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
                 {serviceCategoryData &&
                   serviceCategoryData.map((item, index) => (
-                    <Layanan_Horizontal
+                    <View
                       key={index}
-                      iconLayanan={item.img}
-                      labelLayanan={item.serviceCategoryName}
-                    />
+                      style={{
+                        opacity:
+                          selectedCategory == item.serviceCategoryId ? 1 : 0.5,
+                      }}
+                    >
+                      <Layanan_Horizontal
+                        key={index}
+                        iconLayanan={item.img}
+                        labelLayanan={item.serviceCategoryName}
+                        onPress={() => {
+                          setSelectedCategory(item.serviceCategoryId);
+                          onGetServiceByCategory(item.serviceCategoryId);
+                        }}
+                      />
+                    </View>
                   ))}
               </ScrollView>
             </View>
@@ -130,53 +171,56 @@ export default function HomeScreen() {
 
           <View style={styles.KategoriContainer}>
             <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-              {DATA_HairCare.map((item, index) => (
-                <TouchableOpacity key={index} style={styles.kategoriBox}>
-                  <View style={styles.kategoriBox_Left}>
-                    <Image
-                      source={item.assets[0].img}
-                      style={styles.kategoriImage}
-                    />
-
-                    <TouchableOpacity style={styles.likeContainer}>
+              {mostLookedFor &&
+                mostLookedFor.map((item, index) => (
+                  <TouchableOpacity key={index} style={styles.kategoriBox}>
+                    <View style={styles.kategoriBox_Left}>
                       <Image
-                        source={ICONS.icon_heart}
-                        style={{
-                          ...styles.icon_Heart_style,
-                          tintColor: COLORS.pink_solid,
+                        source={{
+                          uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
                         }}
+                        style={styles.kategoriImage}
                       />
-                    </TouchableOpacity>
-                  </View>
-                  <View style={styles.ketegoriBox_Right}>
-                    <View style={styles.keterangan_Top}>
-                      <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
-                        {item.categoryName}
-                      </Text>
-                      <Text style={FontStyle.Manrope_Bold_16}>
-                        {item.serviceName}
-                      </Text>
-                      <Text
-                        style={FontStyle.NunitoSans_Regular_12_grey}
-                        numberOfLines={2}
-                      >
-                        {item.description}
-                      </Text>
-                    </View>
-                    <View style={styles.keterangan_Bot}>
-                      <Text style={FontStyle.NunitoSans_Regular_12_grey}>
-                        {formatRupiah(item.price)}
-                      </Text>
 
-                      <TouchableOpacity style={styles.buttonBoking}>
-                        <Text style={FontStyle.Manrope_Bold_10_Cyan}>
-                          Booking
-                        </Text>
+                      <TouchableOpacity style={styles.likeContainer}>
+                        <Image
+                          source={ICONS.icon_heart}
+                          style={{
+                            ...styles.icon_Heart_style,
+                            tintColor: COLORS.pink_solid,
+                          }}
+                        />
                       </TouchableOpacity>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
+                    <View style={styles.ketegoriBox_Right}>
+                      <View style={styles.keterangan_Top}>
+                        <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
+                          {item.serviceCategoryName}
+                        </Text>
+                        <Text style={FontStyle.Manrope_Bold_16}>
+                          {item.serviceName}
+                        </Text>
+                        <Text
+                          style={FontStyle.NunitoSans_Regular_12_grey}
+                          numberOfLines={2}
+                        >
+                          {item.description}
+                        </Text>
+                      </View>
+                      <View style={styles.keterangan_Bot}>
+                        <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                          {formatRupiah(item.price)}
+                        </Text>
+
+                        <TouchableOpacity style={styles.buttonBoking}>
+                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>
+                            Booking
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))}
             </ScrollView>
           </View>
         </View>
