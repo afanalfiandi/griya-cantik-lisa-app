@@ -43,7 +43,6 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log(data);
       setActiveIndex(0);
     }, [data])
   );
@@ -65,7 +64,7 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
       <View style={styles.modalContainer}>
         <View style={styles.modal_style}>
           <View style={styles.modal_boxContainer_Top}>
-            {data && (
+            {data && data.img && (
               <>
                 <ScrollView
                   ref={scrollViewRef}
