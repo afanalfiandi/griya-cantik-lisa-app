@@ -79,12 +79,19 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: responsiveScreenWidth(2),
     flexDirection: "row",
-
     shadowColor: "rgba(27, 46, 94, 0.3)",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 3,
     shadowRadius: 2,
     elevation: 5,
+  },
+  noDataWrapper: {
+    width: responsiveScreenWidth(94),
+    marginRight: responsiveScreenWidth(3),
+    flexDirection: "row",
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
   kategoriBox_Left: {
     width: responsiveScreenWidth(35),

@@ -7,7 +7,6 @@ const ServicesService = {
         ? "service/get/category/" + params
         : "service/get";
 
-      console.log(params);
       const result = await get(endPoint);
       return result;
     } catch (error) {

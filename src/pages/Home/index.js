@@ -73,7 +73,6 @@ export default function HomeScreen() {
 
   const onGetServiceByCategory = (params) => {
     ServicesService.getServices(params, true).then((res) => {
-      console.log(res.data[0].img);
       setMostLookedFor(res.data);
     });
   };
@@ -97,14 +96,14 @@ export default function HomeScreen() {
                 Find the service you want, and treat yourself
               </Text>
             </View>
-            <View style={styles.TopContainer_Right}>
+            {/* <View style={styles.TopContainer_Right}>
               <TouchableOpacity onPress={onFavourite}>
                 <Image
                   source={ICONS.icon_heart}
                   style={styles.icon_Heart_style}
                 />
               </TouchableOpacity>
-            </View>
+            </View> */}
           </View>
 
           <View style={styles.CardContainer}>
@@ -182,7 +181,7 @@ export default function HomeScreen() {
                         style={styles.kategoriImage}
                       />
 
-                      <TouchableOpacity style={styles.likeContainer}>
+                      {/* <TouchableOpacity style={styles.likeContainer}>
                         <Image
                           source={ICONS.icon_heart}
                           style={{
@@ -190,7 +189,7 @@ export default function HomeScreen() {
                             tintColor: COLORS.pink_solid,
                           }}
                         />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </View>
                     <View style={styles.ketegoriBox_Right}>
                       <View style={styles.keterangan_Top}>
@@ -221,6 +220,12 @@ export default function HomeScreen() {
                     </View>
                   </TouchableOpacity>
                 ))}
+
+              {mostLookedFor.length == 0 && (
+                <View style={[styles.noDataWrapper]}>
+                  <Text>There is no data</Text>
+                </View>
+              )}
             </ScrollView>
           </View>
         </View>
