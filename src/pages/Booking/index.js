@@ -35,7 +35,7 @@ import { addDataRiwayat } from "../../shared/services/Asycnstorage";
 import { DATA_waktu } from "../../shared/services/DATA_waktu";
 import { SERVICE_MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 export default function BookingScreen({ route }) {
-  const getData = route.params.data;
+  const prevService = route.params.data;
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
   const [TanggalBooking, setTanggalBooking] = useState("");
@@ -44,7 +44,7 @@ export default function BookingScreen({ route }) {
   const [selectedSpesialisID, setSelectedSpesialisID] = useState(null);
   const [selectedSpesialisName, setSelectedSpesialisName] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [SelectedLayanan, setSelectedLayanan] = useState([]);
+  const [selectedService, setSelectedService] = useState([]);
   const [catatan, setCatatan] = useState("");
   const [Pembayaran, setPembayaran] = useState([]);
   const catatanRef = createRef();
@@ -61,13 +61,13 @@ export default function BookingScreen({ route }) {
   };
   const sendToCheckout = () => {
     const data = {
-      layanan: SelectedLayanan,
+      layanan: selectedService,
       spesialis: selectedSpesialisName,
       tanggal: TanggalBooking,
       waktu: selectedTime,
       jenisPembayaran: Pembayaran,
       catatan: catatan,
-      totalHarga: calculateTotalPrice(SelectedLayanan),
+      totalHarga: calculateTotalPrice(selectedService),
     };
     addDataRiwayat(data);
 
@@ -79,11 +79,11 @@ export default function BookingScreen({ route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      const normalizedData = normalizeData(getData);
+      const normalizedData = normalizeData(prevService);
       normalizedData.forEach((item) =>
-        addItemToSelectedLayanan(item, setSelectedLayanan)
+        addItemToSelectedLayanan(item, setSelectedService)
       );
-    }, [getData])
+    }, [prevService])
   );
 
   return (
@@ -101,7 +101,11 @@ export default function BookingScreen({ route }) {
               <Text style={FontStyle.Manrope_Bold_14}>Jenis Layanan</Text>
               <TouchableOpacity
                 style={styles.TambahStyle}
-                onPress={() => navigation.navigate("ServicesScreen")}
+                onPress={() =>
+                  navigation.navigate("ServicesScreen", {
+                    prevService: prevService,
+                  })
+                }
               >
                 <Image style={styles.btnPlus} source={ICONS.icon_plus} />
                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>Tambah</Text>
@@ -110,9 +114,9 @@ export default function BookingScreen({ route }) {
 
             <View style={styles.KategoriContainer}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                {SelectedLayanan.length !== 0 && (
+                {selectedService.length !== 0 && (
                   <>
-                    {SelectedLayanan.map((item, index) => (
+                    {selectedService.map((item, index) => (
                       <TouchableOpacity
                         key={index}
                         style={styles.kategoriBox}
@@ -150,7 +154,7 @@ export default function BookingScreen({ route }) {
                             onPress={() =>
                               removeItemFromSelectedLayanan(
                                 item.serviceID,
-                                setSelectedLayanan
+                                setSelectedService
                               )
                             }
                           >
@@ -304,13 +308,13 @@ export default function BookingScreen({ route }) {
             <Text style={FontStyle.Manrope_Bold_14}>
               Total{" "}
               <Text style={FontStyle.NunitoSans_Regular_14}>
-                ({SelectedLayanan.length} Layanan)
+                ({selectedService.length} Layanan)
               </Text>
             </Text>
             <Text
               style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}
             >
-              Rp. {calculateTotalPriceToString(SelectedLayanan)}
+              Rp. {calculateTotalPriceToString(selectedService)}
             </Text>
           </View>
           <View style={styles.FloatingBottomRight}>

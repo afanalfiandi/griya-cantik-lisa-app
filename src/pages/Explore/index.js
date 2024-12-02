@@ -22,6 +22,7 @@ export default function ExploreScreen({ route }) {
   const params = route?.params?.data || null;
 
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
   const [ModalDetail, setModalDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
 
@@ -45,6 +46,7 @@ export default function ExploreScreen({ route }) {
 
   const onGetServiceCategory = () => {
     getServiceCategory().then((data) => {
+      setIsLoading(false);
       let selectedCategoryLabel = params
         ? data.data.find((item) => {
             return item.serviceCategoryId === params;
@@ -62,7 +64,12 @@ export default function ExploreScreen({ route }) {
       selectedCategory ? selectedCategory : params,
       true
     ).then((res) => {
-      setServicesData(res.data);
+      setIsLoading(true);
+
+      if (res) {
+        setIsLoading(false);
+        setServicesData(res.data);
+      }
     });
   };
 
@@ -122,7 +129,8 @@ export default function ExploreScreen({ route }) {
 
         <View style={styles.KategoriContainer}>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {servicesData &&
+            {!isLoading &&
+              servicesData &&
               servicesData.map((item, index) => (
                 <TouchableOpacity
                   key={index}
@@ -172,7 +180,30 @@ export default function ExploreScreen({ route }) {
                 </TouchableOpacity>
               ))}
 
-            {servicesData.length <= 0 && <Text>There is no data...</Text>}
+            {!isLoading && servicesData.length <= 0 && (
+              <View
+                styles={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  border: 1,
+                  borderColor: "black",
+                }}
+              >
+                <Text>There is no data...</Text>
+              </View>
+            )}
+            {isLoading && (
+              <View
+                styles={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text>Loading...</Text>
+              </View>
+            )}
           </ScrollView>
         </View>
       </View>
