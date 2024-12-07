@@ -1,5 +1,8 @@
 import { StyleSheet, Dimensions } from "react-native";
-import { responsiveScreenWidth } from "react-native-responsive-dimensions";
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from "react-native-responsive-dimensions";
 import COLORS from "../../../consts/colors.const";
 import { getFontSize } from "../../../helper/helper";
 const styles = StyleSheet.create({
@@ -41,13 +44,13 @@ const styles = StyleSheet.create({
 
   kategoriBox: {
     width: responsiveScreenWidth(94),
-    paddingVertical: responsiveScreenWidth(3),
+    paddingVertical: responsiveScreenWidth(1),
     backgroundColor: "white",
-    borderRadius: responsiveScreenWidth(2),
+    borderRadius: responsiveScreenWidth(5),
     flexDirection: "row",
     marginVertical: responsiveScreenWidth(2),
     justifyContent: "space-between",
-    shadowColor: "#000",
+    shadowColor: "#d8d8d8",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 3,
     shadowRadius: 2,
@@ -70,8 +73,7 @@ const styles = StyleSheet.create({
   },
   kategoriImage: {
     width: responsiveScreenWidth(15),
-    borderTopLeftRadius: responsiveScreenWidth(2),
-    borderBottomLeftRadius: responsiveScreenWidth(2),
+    height: responsiveScreenHeight(12),
     resizeMode: "contain",
   },
   icon_Right: {

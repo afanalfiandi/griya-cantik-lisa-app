@@ -13,8 +13,15 @@ import ICONS from "../../../consts/icon.const.js";
 import FontStyle from "../../../style/font.style.js";
 import HeaderTop from "../../Header/Header.js";
 import { DATA_Payment } from "../../../services/DATA_Payment.js";
+import { PAYMETHOD_MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
 
-const ModalJenisPembayaran = ({ children, visible, onClose, setSelected }) => {
+const ModalJenisPembayaran = ({
+  children,
+  visible,
+  onClose,
+  setSelected,
+  data,
+}) => {
   const selectItem = (item) => {
     setSelected(item);
     onClose();
@@ -37,14 +44,19 @@ const ModalJenisPembayaran = ({ children, visible, onClose, setSelected }) => {
           <HeaderTop title={"Jenis Pembayaran"} />
           <ScrollView>
             <View style={styles.contentContainer}>
-              {DATA_Payment.map((item, index) => (
+              {data.map((item, index) => (
                 <TouchableOpacity
                   key={index}
                   style={styles.kategoriBox}
                   onPress={() => selectItem(item)}
                 >
                   <View style={styles.kategoriBox_Left}>
-                    <Image source={item.img} style={styles.kategoriImage} />
+                    <Image
+                      source={{
+                        uri: `${PAYMETHOD_MEDIA_BASE_URL}${item.img}`,
+                      }}
+                      style={styles.kategoriImage}
+                    />
                   </View>
                   <View style={styles.ketegoriBox_Center}>
                     <Text style={FontStyle.Manrope_Bold_14}>

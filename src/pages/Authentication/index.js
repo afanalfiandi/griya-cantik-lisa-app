@@ -30,6 +30,7 @@ const AuthenticationScreen = () => {
         setIsLoading(false);
         if (result.status == "success") {
           const data = JSON.stringify(result.data);
+          console.log(result.data);
           await UserSessionUtils.setUserSession(data);
 
           navigation.navigate("HomeScreen");
