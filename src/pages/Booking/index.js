@@ -33,9 +33,17 @@ import {
 } from "./booking.config";
 import { addDataRiwayat } from "../../shared/services/Asycnstorage";
 import { DATA_waktu } from "../../shared/services/DATA_waktu";
+import {
+  PAYMETHOD_MEDIA_BASE_URL,
+  SERVICE_MEDIA_BASE_URL,
+  SPECIALIST_MEDIA_BASE_URL,
+} from "../../shared/consts/base-url.const";
+import { getSpecialist } from "../../shared/services/specialist.service";
+import { getSlot } from "../../shared/services/slot.service";
+import { getPaymentMethod } from "../../shared/services/payment-method.service";
 import { useToast } from "react-native-toast-notifications";
 export default function BookingScreen({ route }) {
-  const getData = route.params.data;
+  const prevService = route.params.data;
   const toast = useToast();
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
@@ -45,9 +53,16 @@ export default function BookingScreen({ route }) {
   const [selectedSpesialisID, setSelectedSpesialisID] = useState(null);
   const [selectedSpesialisName, setSelectedSpesialisName] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
-  const [SelectedLayanan, setSelectedLayanan] = useState([]);
+  const [selectedService, setSelectedService] = useState([]);
   const [catatan, setCatatan] = useState("");
   const [Pembayaran, setPembayaran] = useState([]);
+
+  const [specialistData, setSpecialistData] = useState([]);
+  const [slotData, setSlotData] = useState([]);
+  const [paymentMethodData, setPaymentMethodData] = useState([]);
+
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+
   const catatanRef = createRef();
 
   const toggleModal = () => {
@@ -62,13 +77,13 @@ export default function BookingScreen({ route }) {
   };
   const sendToCheckout = () => {
     const data = {
-      layanan: SelectedLayanan,
+      layanan: selectedService,
       spesialis: selectedSpesialisName,
       tanggal: TanggalBooking,
       waktu: selectedTime,
       jenisPembayaran: Pembayaran,
       catatan: catatan,
-      totalHarga: calculateTotalPrice(SelectedLayanan),
+      totalHarga: calculateTotalPrice(selectedService),
     };
     addDataRiwayat(data, toast);
 
@@ -80,12 +95,35 @@ export default function BookingScreen({ route }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      const normalizedData = normalizeData(getData);
+      const normalizedData = normalizeData(prevService);
       normalizedData.forEach((item) =>
-        addItemToSelectedLayanan(item, setSelectedLayanan)
+        addItemToSelectedLayanan(item, setSelectedService)
       );
-    }, [getData])
+
+      initData();
+    }, [prevService])
   );
+
+  const initData = () => {
+    getSpecialist().then((res) => {
+      if (res) {
+        setSpecialistData(res.data);
+      }
+    });
+
+    getSlot().then((res) => {
+      if (res) {
+        setSlotData(res.data);
+      }
+    });
+
+    getPaymentMethod().then((res) => {
+      if (res) {
+        setPaymentMethodData(res.data);
+        setSelectedPaymentMethod(res.data[0]);
+      }
+    });
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -102,7 +140,11 @@ export default function BookingScreen({ route }) {
               <Text style={FontStyle.Manrope_Bold_14}>Jenis Layanan</Text>
               <TouchableOpacity
                 style={styles.TambahStyle}
-                onPress={() => navigation.navigate("ServicesScreen")}
+                onPress={() =>
+                  navigation.navigate("ServicesScreen", {
+                    prevService: prevService,
+                  })
+                }
               >
                 <Image style={styles.btnPlus} source={ICONS.icon_plus} />
                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>Tambah</Text>
@@ -111,9 +153,9 @@ export default function BookingScreen({ route }) {
 
             <View style={styles.KategoriContainer}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                {SelectedLayanan.length !== 0 && (
+                {selectedService.length !== 0 && (
                   <>
-                    {SelectedLayanan.map((item, index) => (
+                    {selectedService.map((item, index) => (
                       <TouchableOpacity
                         key={index}
                         style={styles.kategoriBox}
@@ -121,7 +163,9 @@ export default function BookingScreen({ route }) {
                       >
                         <View style={styles.kategoriBox_Left}>
                           <Image
-                            source={item.assets[0].img}
+                            source={{
+                              uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                            }}
                             style={styles.kategoriImage}
                           />
                         </View>
@@ -138,7 +182,7 @@ export default function BookingScreen({ route }) {
                               <Text
                                 style={FontStyle.NunitoSans_Regular_12_grey}
                               >
-                                {item.categoryName}
+                                {item.serviceCategoryName}
                               </Text>
                             </View>
                           </View>
@@ -149,7 +193,7 @@ export default function BookingScreen({ route }) {
                             onPress={() =>
                               removeItemFromSelectedLayanan(
                                 item.serviceId,
-                                setSelectedLayanan
+                                setSelectedService
                               )
                             }
                           >
@@ -163,6 +207,19 @@ export default function BookingScreen({ route }) {
                     ))}
                   </>
                 )}
+
+                {selectedService.length <= 0 && (
+                  <View
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: 20,
+                    }}
+                  >
+                    <Text>Tidak ada layanan yang dipilih</Text>
+                  </View>
+                )}
               </ScrollView>
             </View>
 
@@ -172,51 +229,54 @@ export default function BookingScreen({ route }) {
 
             <View style={styles.SpesialisList_Horizontal}>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-                {DATA_Spesialis.map((item, index) => (
-                  <View key={index} style={styles.SpesialisStyle}>
-                    <TouchableOpacity
-                      style={{
-                        ...styles.spesialisPhotos_Container,
-                        borderColor:
-                          selectedSpesialisID === item.specialistId
-                            ? COLORS.purple
-                            : COLORS.grey,
-                        borderWidth:
-                          selectedSpesialisID === item.specialistId
-                            ? responsiveScreenWidth(1)
-                            : 0,
-                      }}
-                      onPress={() => {
-                        setSelectedSpesialisID(
-                          selectedSpesialisID === item.specialistId
-                            ? null
-                            : item.specialistId
-                        );
-                        setSelectedSpesialisName(
-                          setSelectedSpesialisName === item.specialistName
-                            ? null
-                            : item.specialistName
-                        );
-                      }}
-                    >
-                      <Image
-                        source={item.img}
-                        style={styles.spesialisPhotos_Style}
-                      />
-                      {selectedSpesialisID === item.specialistId && (
-                        <View style={styles.spesialisFocus}>
-                          <Image
-                            style={styles.iconCheck}
-                            source={ICONS.icon_check}
-                          />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                    <Text style={FontStyle.Manrope_Medium_14_}>
-                      {item.specialistName}
-                    </Text>
-                  </View>
-                ))}
+                {specialistData &&
+                  specialistData.map((item, index) => (
+                    <View key={index} style={styles.SpesialisStyle}>
+                      <TouchableOpacity
+                        style={{
+                          ...styles.spesialisPhotos_Container,
+                          borderColor:
+                            selectedSpesialisID === item.specialistId
+                              ? COLORS.purple
+                              : COLORS.grey,
+                          borderWidth:
+                            selectedSpesialisID === item.specialistId
+                              ? responsiveScreenWidth(1)
+                              : 0,
+                        }}
+                        onPress={() => {
+                          setSelectedSpesialisID(
+                            selectedSpesialisID === item.specialistId
+                              ? null
+                              : item.specialistId
+                          );
+                          setSelectedSpesialisName(
+                            setSelectedSpesialisName === item.specialistName
+                              ? null
+                              : item.specialistName
+                          );
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: `${SPECIALIST_MEDIA_BASE_URL}${item.img}`,
+                          }}
+                          style={styles.spesialisPhotos_Style}
+                        />
+                        {selectedSpesialisID === item.specialistId && (
+                          <View style={styles.spesialisFocus}>
+                            <Image
+                              style={styles.iconCheck}
+                              source={ICONS.icon_check}
+                            />
+                          </View>
+                        )}
+                      </TouchableOpacity>
+                      <Text style={FontStyle.Manrope_Medium_14_}>
+                        {item.specialistName}
+                      </Text>
+                    </View>
+                  ))}
               </ScrollView>
             </View>
 
@@ -232,7 +292,7 @@ export default function BookingScreen({ route }) {
 
             <View style={styles.KategoriList_Horizontal}>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-                {DATA_waktu.map((item, index) => (
+                {slotData.map((item, index) => (
                   <TouchableOpacity
                     key={index}
                     style={{
@@ -274,15 +334,17 @@ export default function BookingScreen({ route }) {
                 onPress={() => toggleModalPembayaran()}
               >
                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>
-                  {Pembayaran.length === 0 ? "Pilih" : "Ubah"}
+                  {!selectedPaymentMethod ? "Pilih" : "Ubah"}
                 </Text>
               </TouchableOpacity>
             </View>
 
-            {Pembayaran.length !== 0 && (
+            {selectedPaymentMethod && (
               <View style={styles.PembayaranImageContainer}>
                 <Image
-                  source={Pembayaran.img}
+                  source={{
+                    uri: `${PAYMETHOD_MEDIA_BASE_URL}${selectedPaymentMethod.img}`,
+                  }}
                   style={styles.PembayaranImage}
                 />
               </View>
@@ -306,14 +368,13 @@ export default function BookingScreen({ route }) {
             <Text style={FontStyle.Manrope_Bold_14}>
               Total{" "}
               <Text style={FontStyle.NunitoSans_Regular_14}>
-                ({SelectedLayanan.length} Layanan)
+                ({selectedService.length} Layanan)
               </Text>
             </Text>
             <Text
               style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}
             >
-              Rp. {calculateTotalPriceToString(SelectedLayanan)}
-
+              Rp. {calculateTotalPriceToString(selectedService)}
             </Text>
           </View>
           <View style={styles.FloatingBottomRight}>
@@ -330,7 +391,8 @@ export default function BookingScreen({ route }) {
       <ModalJenisPembayaran
         visible={ModalPembayaran}
         onClose={() => setModalPembayaran(false)}
-        setSelected={setPembayaran}
+        setSelected={setSelectedPaymentMethod}
+        data={paymentMethodData}
       />
     </SafeAreaView>
   );

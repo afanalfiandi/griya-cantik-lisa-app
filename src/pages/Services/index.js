@@ -20,39 +20,76 @@ import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah, Print_r } from "../../shared/helper/helper";
 import { DATA_Product } from "../../shared/services/DATA_Product";
+import { getServiceCategory } from "../../shared/services/service_category";
+import ServicesService from "../../shared/services/services.service";
+import {
+  SERVICE_CATEGORY_MEDIA_BASE_URL,
+  SERVICE_MEDIA_BASE_URL,
+} from "../../shared/consts/base-url.const";
 
-export default function ServicesScreen() {
+export default function ServicesScreen({ route }) {
+  const prevService = route.params.prevService;
+
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
-  const [selectedKategori, setSelectedKategori] = useState(null);
-  const [SelectedLayanan, setSelectedLayanan] = useState([]);
+
+  const [serviceCategory, setServiceCategory] = useState([]);
+  const [servicesData, setServicesData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedCategoryLabel, setSelectedCategoryLabel] = useState();
+  const [selectedService, setSelectedService] = useState([]);
+
   const toggleModal = () => {
     setModalDetail(!ModalDetail);
   };
   const selectItem = (item) => {
-    const isSelected = SelectedLayanan.some(
-      (selectedItem) => selectedItem.serviceId === item.serviceId
-    );
+    const isSelected =
+      selectedService.some(
+        (selected) => selected.serviceId === item.serviceId
+      ) || item.serviceId === prevService;
 
     if (isSelected) {
-      setSelectedLayanan(
-        SelectedLayanan.filter((selectedItem) => selectedItem.serviceId !== item.serviceId)
+      setSelectedService(
+        selectedService.filter(
+          (selected) => selected.serviceId !== item.serviceId
+        )
       );
     } else {
-      setSelectedLayanan([...SelectedLayanan, item]);
+      setSelectedService((exist) => [...exist, item]);
     }
   };
   const calculateTotalPrice = () => {
-    return SelectedLayanan.reduce((total, item) => total + item.price, 0);
+    return selectedService.reduce((total, item) => total + item.price, 0);
   };
-  const filteredProducts = selectedKategori
-    ? DATA_Product.filter((product) => product.categoryId === selectedKategori)
+
+  const filteredProducts = selectedCategory
+    ? DATA_Product.filter((product) => product.categoryId === selectedCategory)
     : DATA_Product;
+
   useFocusEffect(
     React.useCallback(() => {
-      setSelectedKategori(1);
+      initData();
     }, [])
   );
+
+  const initData = () => {
+    setSelectedService([prevService]);
+    onGetServiceCategory();
+    getServiceByCategory();
+  };
+  const onGetServiceCategory = () => {
+    getServiceCategory().then((data) => {
+      setServiceCategory(data.data);
+      setSelectedCategory(data.data[0].serviceCategoryId);
+      setSelectedCategoryLabel(data.data[0].serviceCategoryId);
+    });
+  };
+
+  const getServiceByCategory = (selectedCategory) => {
+    ServicesService.getServices(selectedCategory, true).then((res) => {
+      setServicesData(res.data);
+    });
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
@@ -69,44 +106,53 @@ export default function ServicesScreen() {
           <View style={styles.contentContainer}>
             <View style={styles.LayananList_Horizontal}>
               <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-                {DATA_Kategori.map((item, index) => (
-                  <Layanan_Horizontal
-                    key={index}
-                    iconLayanan={item.icon}
-                    labelLayanan={item.categoryName}
-                    isFocus={
-                      selectedKategori === item.categoryId ? true : null
-                    }
-                    onPress={() => {
-                      setSelectedKategori(
-                        selectedKategori === item.categoryId
-                          ? null
-                          : item.categoryId
-                      );
-                    }}
-                  />
-                ))}
+                {serviceCategory &&
+                  serviceCategory.map((item, index) => (
+                    <Layanan_Horizontal
+                      key={index}
+                      iconLayanan={item.img}
+                      labelLayanan={item.serviceCategoryName}
+                      isFocus={
+                        selectedCategory === item.serviceCategoryId
+                          ? true
+                          : null
+                      }
+                      onPress={() => {
+                        setSelectedCategory(
+                          selectedCategory === item.serviceCategoryId
+                            ? null
+                            : item.serviceCategoryId
+                        );
+                        getServiceByCategory(item.serviceCategoryId);
+                      }}
+                    />
+                  ))}
               </ScrollView>
             </View>
 
             <View style={styles.KategoriContainer}>
               <ScrollView showsVerticalScrollIndicator={false}>
-                {filteredProducts.map((item, index) => (
+                {servicesData.map((item, index) => (
                   <TouchableOpacity
                     key={index}
                     style={styles.kategoriBox}
                     onPress={() => selectItem(item)}
                   >
                     <View style={styles.kategoriBox_Left}>
-                      <Image source={item.assets[0].img} style={styles.kategoriImage} />
+                      <Image
+                        source={{
+                          uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                        }}
+                        style={styles.kategoriImage}
+                      />
                     </View>
                     <View style={styles.ketegoriBox_Center}>
                       <View style={styles.keterangan_Top}>
                         <Text style={FontStyle.Manrope_Bold_16}>
-                          {item.categoryName}
+                          {item.serviceCategoryName}
                         </Text>
                         <Text style={FontStyle.Manrope_Bold_16_Cyan}>
-                          {formatRupiah(item.price)}{" "}
+                          {formatRupiah(item.price)}
                         </Text>
                         <Text
                           style={{
@@ -115,15 +161,15 @@ export default function ServicesScreen() {
                           }}
                           numberOfLines={2}
                         >
-                          {item.description}{" "}
+                          {item.description}
                         </Text>
                       </View>
                     </View>
                     <View style={styles.ketegoriBox_Right}>
                       <TouchableOpacity
                         style={
-                          SelectedLayanan.some(
-                            (selectedItem) => selectedItem.serviceId === item.serviceId
+                          selectedService.some(
+                            (selected) => selected.serviceId === item.serviceId
                           )
                             ? styles.minus_style
                             : styles.plus_style
@@ -132,16 +178,18 @@ export default function ServicesScreen() {
                       >
                         <Image
                           source={
-                            SelectedLayanan.some(
-                              (selectedItem) => selectedItem.serviceId === item.serviceId
+                            selectedService.some(
+                              (selected) =>
+                                selected.serviceId === item.serviceId
                             )
                               ? ICONS.icon_minus
                               : ICONS.icon_plus
                           }
                           style={{
                             ...styles.iconplus_minus,
-                            tintColor: SelectedLayanan.some(
-                              (selectedItem) => selectedItem.serviceId === item.serviceId
+                            tintColor: selectedService.some(
+                              (selected) =>
+                                selected.serviceId === item.serviceId
                             )
                               ? COLORS.red
                               : COLORS.white,
@@ -161,7 +209,7 @@ export default function ServicesScreen() {
             <Text style={FontStyle.Manrope_Bold_14}>
               Total{" "}
               <Text style={FontStyle.NunitoSans_Regular_14}>
-                ({SelectedLayanan.length} Layanan)
+                ({selectedService.length} Layanan)
               </Text>
             </Text>
             <Text
@@ -177,7 +225,7 @@ export default function ServicesScreen() {
               ButtonHeight={55}
               onPress={() =>
                 navigation.navigate("BookingScreen", {
-                  data: SelectedLayanan,
+                  data: selectedService,
                 })
               }
             />

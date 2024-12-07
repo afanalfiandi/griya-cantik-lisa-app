@@ -17,6 +17,7 @@ import {
 import ButtonPurple from "../../Button/ButtonPurple.js";
 import { useFocusEffect } from "@react-navigation/native";
 import { formatRupiah } from "../../../helper/helper.js";
+import { SERVICE_MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
 
 const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
   const scrollViewRef = useRef(null);
@@ -29,7 +30,7 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
     // Menggunakan Math.round untuk menghitung indeks yang lebih akurat
     const index = Math.round(contentOffsetX / itemWidth);
 
-    if (index !== activeIndex && index >= 0 && index < data.assets.length) {
+    if (index !== activeIndex && index >= 0 && index < data.img.length) {
       setActiveIndex(index);
     }
   };
@@ -47,6 +48,13 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
   );
 
   return (
+    // <View>
+    //   {data &&
+    //     data.img.map((item, index) => {
+    //       return <Text key={index}>{item.img}</Text>;
+    //     })}
+    // </View>
+
     <Modal
       animationType="fade"
       transparent={true}
@@ -56,7 +64,7 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
       <View style={styles.modalContainer}>
         <View style={styles.modal_style}>
           <View style={styles.modal_boxContainer_Top}>
-            {data.assets && (
+            {data && data.img && (
               <>
                 <ScrollView
                   ref={scrollViewRef}
@@ -66,34 +74,47 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
                   showsHorizontalScrollIndicator={false}
                   scrollEventThrottle={16} // Lebih cepat untuk akurasi
                 >
-                  {data.assets.map((item, index) => (
-                    <View key={index}>
-                      <Image source={item.img} style={styles.imageDetail} />
-                    </View>
-                  ))}
+                  {data &&
+                    data.img.map((item, index) => (
+                      <View key={index}>
+                        <Image
+                          source={{
+                            uri: `${SERVICE_MEDIA_BASE_URL}${item.img}`,
+                          }}
+                          style={styles.imageDetail}
+                        />
+                      </View>
+                    ))}
                 </ScrollView>
 
                 <View style={styles.indicatorContainer}>
-                  {data.assets.map((item, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      onPress={() => handleIndicatorPress(index)}
-                    >
-                      <View
-                        style={[
-                          styles.indicator,
-                          index === activeIndex
-                            ? styles.activeIndicator
-                            : styles.inactiveIndicator,
-                        ]}
-                      />
-                    </TouchableOpacity>
-                  ))}
+                  {data &&
+                    data.img.map((item, index) => (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => handleIndicatorPress(index)}
+                      >
+                        <View
+                          style={[
+                            styles.indicator,
+                            index === activeIndex
+                              ? styles.activeIndicator
+                              : styles.inactiveIndicator,
+                          ]}
+                        />
+                      </TouchableOpacity>
+                    ))}
                 </View>
 
                 <View style={styles.closeContainer}>
-                  <TouchableOpacity style={styles.btnClose} onPress={() => onClose()}>
-                    <Image source={ICONS.icon_silang} style={styles.iconSilang} />
+                  <TouchableOpacity
+                    style={styles.btnClose}
+                    onPress={() => onClose()}
+                  >
+                    <Image
+                      source={ICONS.icon_silang}
+                      style={styles.iconSilang}
+                    />
                   </TouchableOpacity>
                 </View>
               </>
@@ -108,7 +129,9 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
                 <Text style={FontStyle.NunitoSans_Regular_16}>30 Menit</Text>
               </View>
 
-              <Text style={FontStyle.Manrope_Bold_24_Cyan}>{formatRupiah(data.price)}</Text>
+              <Text style={FontStyle.Manrope_Bold_24_Cyan}>
+                {formatRupiah(data.price)}
+              </Text>
             </View>
             <View style={styles.HR_Style} />
 
