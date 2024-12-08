@@ -25,7 +25,7 @@
     },
     "plugins": ["expo-font"],
     "extra": {
-      "BASE_URL": "https://c9ba-120-188-94-48.ngrok-free.app"
+      "BASE_URL": "http://192.168.168.241:8000"
     }
   }
 }

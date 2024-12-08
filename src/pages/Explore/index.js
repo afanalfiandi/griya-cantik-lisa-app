@@ -18,6 +18,10 @@ import ServicesService from "../../shared/services/services.service";
 import { getServiceCategory } from "../../shared/services/service_category";
 import { SERVICE_MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 import { useToast } from "react-native-toast-notifications";
+import ICONS from "../../shared/consts/icon.const";
+import { responsiveScreenHeight, responsiveScreenWidth } from "react-native-responsive-dimensions";
+import { addDataServices, deleteDataServices } from "../../shared/services/Asycnstorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ExploreScreen({ route }) {
   const params = route?.params?.data || null;
@@ -26,7 +30,7 @@ export default function ExploreScreen({ route }) {
   const [isLoading, setIsLoading] = useState(false);
   const [ModalDetail, setModalDetail] = useState(false);
   const [selectedItem, setSelectedItem] = useState([]);
-
+  const [selectedService, setSelectedService] = useState([]);
   const [serviceCategory, setServiceCategory] = useState([]);
   const [servicesData, setServicesData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(params ? params : 0);
@@ -41,17 +45,35 @@ export default function ExploreScreen({ route }) {
   };
 
   const initData = () => {
-    onGetServiceCategory();
-    getServiceByCategory();
+    // Ambil kategori pertama sebagai default
+    getServiceCategory().then((data) => {
+      setIsLoading(false);
+
+      // Pastikan data kategori ada
+      if (data && data.data && data.data.length > 0) {
+        const defaultCategory = data.data[0];
+        const defaultCategoryId = defaultCategory.serviceCategoryId;
+        const defaultCategoryName = defaultCategory.serviceCategoryName;
+
+        // Setel default kategori
+        setServiceCategory(data.data);
+        setSelectedCategory(defaultCategoryId);
+        setSelectedCategoryLabel(defaultCategoryName);
+
+        // Muat data layanan berdasarkan kategori pertama
+        getServiceByCategory(defaultCategoryId);
+      }
+    });
   };
+
 
   const onGetServiceCategory = () => {
     getServiceCategory().then((data) => {
       setIsLoading(false);
       let selectedCategoryLabel = params
         ? data.data.find((item) => {
-            return item.serviceCategoryId === params;
-          })?.serviceCategoryName
+          return item.serviceCategoryId === params;
+        })?.serviceCategoryName
         : data.data[0].serviceCategoryName;
 
       setServiceCategory(data.data);
@@ -74,8 +96,28 @@ export default function ExploreScreen({ route }) {
     });
   };
 
+
+  const isProductLiked = (serviceId) => {
+    return selectedService.some((item) => item.serviceId === serviceId);
+  };
+
+  // Fungsi untuk menambahkan produk ke dalam liked
+  const onSelectServices = (services) => {
+
+    addDataServices(services, toast);
+
+
+
+    navigation.navigate('BookingScreen')
+  };
+  const reset = async () => {
+    await AsyncStorage.removeItem("selectedServices");
+
+  };
+
   useFocusEffect(
     React.useCallback(() => {
+      reset();
       initData();
     }, [params])
   );
@@ -169,7 +211,7 @@ export default function ExploreScreen({ route }) {
                       <TouchableOpacity
                         style={styles.buttonBoking}
                         onPress={() =>
-                          navigation.navigate("BookingScreen", { data: item })
+                          onSelectServices(item)
                         }
                       >
                         <Text style={FontStyle.Manrope_Bold_10_Cyan}>
@@ -182,16 +224,15 @@ export default function ExploreScreen({ route }) {
               ))}
 
             {!isLoading && servicesData.length <= 0 && (
-              <View
-                styles={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  border: 1,
-                  borderColor: "black",
-                }}
-              >
-                <Text>There is no data...</Text>
+              <View style={{
+                alignItems: 'center',
+                width: responsiveScreenWidth(94),
+                height: responsiveScreenHeight(60),
+                justifyContent: 'center',
+
+              }}>
+                <Image source={ICONS.icon_nodata_bg} style={styles.noDataStyle} />
+                <Text style={FontStyle.NunitoSans_Regular_12_grey}>There is no data...</Text>
               </View>
             )}
             {isLoading && (

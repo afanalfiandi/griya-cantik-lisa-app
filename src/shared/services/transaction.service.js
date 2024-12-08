@@ -10,3 +10,14 @@ export const getTransaction = async (customerID) => {
     }
   }
 };
+
+export const getTransactionByNymber = async (transactionNumber) => {
+  try {
+    const result = await get("transaction/get?transactionNumber=" + transactionNumber);
+    return result;
+  } catch (error) {
+    if (error) {
+      return error;
+    }
+  }
+};

@@ -92,7 +92,15 @@ const styles = StyleSheet.create({
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
+    // backgroundColor: 'pink'
   },
+  icon_empty: {
+    width: getFontSize(35),
+    height: getFontSize(35),
+    // tintColor: COLORS.cyan_font,
+    marginRight: 10
+  },
+
   kategoriBox_Left: {
     width: responsiveScreenWidth(35),
     resizeMode: "contain",

@@ -41,7 +41,16 @@ const ModalJenisPembayaran = ({
           backgroundColor={"white"}
         />
         <View style={styles.modal_style}>
-          <HeaderTop title={"Jenis Pembayaran"} />
+          <View style={styles.headerContainer}>
+            <TouchableOpacity style={styles.headerButtonLeft} onPress={() =>
+              onClose()
+            }>
+              <Image style={styles.btnImage} source={ICONS.icon_left} />
+            </TouchableOpacity>
+            <View style={styles.headerTitleContainer}>
+              <Text style={FontStyle.Manrope_Bold_16}>Jenis Pembayaran</Text>
+            </View>
+          </View>
           <ScrollView>
             <View style={styles.contentContainer}>
               {data.map((item, index) => (

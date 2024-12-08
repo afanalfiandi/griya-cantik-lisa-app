@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import styles from "./style";
 import FontStyle from "../../shared/style/font.style";
-import React from "react";
+import React, { useState } from "react";
 import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import CheckoutContainerVertical from "../../shared/component/CheckoutComponent/CheckoutContainerVertical";
@@ -24,15 +24,36 @@ import {
   formatRupiah,
   Print_r,
 } from "../../shared/helper/helper";
+import { PAYMETHOD_MEDIA_BASE_URL, SERVICE_MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
+import ICONS from "../../shared/consts/icon.const";
+import { getTransactionByNymber } from "../../shared/services/transaction.service";
 
 export default function CheckoutScreen({ route }) {
   const navigation = useNavigation();
   const getData = route.params.data;
+  const [transactionData, setTransactionData] = useState({});
+
+
+  const onGetTransaction = async () => {
+
+    if (getData.order_id) {
+      getTransactionByNymber(getData.order_id).then((res) => {
+        if (res) {
+          setTransactionData(res.data);
+          Print_r(res.data); // Gunakan res.data langsung
+        }
+      });
+
+
+    };
+  }
+
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log(getData);
-      Print_r(getData);
+      onGetTransaction();
+      console.log("Route Params:", route.params);
+
     }, [getData])
   );
 
@@ -50,20 +71,29 @@ export default function CheckoutScreen({ route }) {
                   <CheckoutContainerVertical
                     title={"Tanggal"}
                     label={
-                      getData
-                        ? convertToIndonesianDate(getData.tanggal)
-                        : "invalid date"
+                      transactionData.length > 0 && transactionData[0].bookingDate
+                        ? convertToIndonesianDate(transactionData[0].bookingDate)
+                        : "Invalid Date"
                     }
+
+
+
                   />
                   <CheckoutContainerVertical
                     title={"Waktu"}
-                    label={getData ? getData.waktu : "invalid Time"}
+                    label={"invalid Time"}
                     paddingLeft={6}
                   />
                   <CheckoutContainerVertical
                     title={"Spesialis"}
-                    label={getData ? getData.spesialis : "Unknown"}
+                    label={
+                      transactionData.length > 0 && transactionData[0].specialistName
+                        ? transactionData[0].specialistName
+                        : "Unknown"
+                    }
+
                   />
+
                 </View>
                 <LineHorizontal isSolid={true} />
 
@@ -76,23 +106,26 @@ export default function CheckoutScreen({ route }) {
                   Layanan
                 </Text>
 
-                {getData && (
-                  <>
-                    {getData.layanan.map((item, index) => (
-                      <CheckoutContainerHorizontal
-                        key={index}
-                        title={item.serviceName}
-                        label={formatRupiah(item.price)}
-                      />
-                    ))}
-                  </>
-                )}
+                {transactionData.length > 0 && transactionData[0].service && transactionData[0].service.map((item, index) => (
+                  <CheckoutContainerHorizontal
+                    key={index}
+                    title={item.serviceName || "Unknown Service"}
+                    label={item.price ? formatRupiah(item.price) : "Unknown Price"}
+                  />
+                ))}
+
+
 
                 <LineHorizontal />
 
                 <CheckoutContainerHorizontal
                   title={"Sub Total"}
-                  label={formatRupiah(getData.totalHarga)}
+                  label={
+                    transactionData.length > 0 && transactionData[0].subtotal
+                      ? formatRupiah(transactionData[0].subtotal)
+                      : "Unknown"
+                  }
+
                 />
 
                 <LineHorizontal
@@ -103,18 +136,29 @@ export default function CheckoutScreen({ route }) {
 
                 <View style={styles.Pembayaran}>
                   <View style={styles.PembayaranImg}>
-                    <Image
-                      source={getData.jenisPembayaran.img}
+                    {/* <Image
+                      source={{
+                        uri: `${PAYMETHOD_MEDIA_BASE_URL}${transactionData.length > 0 && transactionData[0].paymentMethod
+                        ? transactionData[0].paymentMethod
+                        : "Unknown"}`,
+                      }}
+
                       style={styles.payImgStyle}
-                    />
+                    /> */}
                   </View>
                   <View style={styles.pembayaranDetail}>
                     <Text style={FontStyle.Manrope_Bold_14}>
-                      {getData.jenisPembayaran.paymentMethodName}
+                      {transactionData.length > 0 && transactionData[0].paymentMethod
+                        ? transactionData[0].paymentMethod
+                        : "Unknown"}
                     </Text>
                     <Text style={FontStyle.NunitoSans_Regular_14}>
-                      28927386289928
+                      {getData
+                        ? getData.va_numbers[0].va_number
+                        : "Nomor Tidak Tersedia"}
                     </Text>
+
+
                   </View>
                   <TouchableOpacity
                     style={styles.pembayaranSalin}

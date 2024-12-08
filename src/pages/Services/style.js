@@ -246,6 +246,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  noDataContainer: {
+    width: responsiveScreenWidth(100),
+    height: responsiveScreenHeight(80),
+    alignItems: 'center',
+    backgroundColor: 'pink',
+    justifyContent: 'center'
+  },
+  noDataStyle: {
+    width: responsiveScreenWidth(70),
+    height: responsiveScreenWidth(70),
+    resizeMode: 'contain',
+    marginBottom: 20
+  }
 });
 
 export default styles;

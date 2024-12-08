@@ -1,5 +1,6 @@
 import {
   Image,
+  RefreshControl,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -16,7 +17,7 @@ import COLORS from "../../shared/consts/colors.const";
 import { DATA_HairCare } from "../../shared/services/DATA_HairCare";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah, Print_r } from "../../shared/helper/helper";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { getServiceCategory } from "../../shared/services/service_category";
 import UserSessionUtils from "../../shared/utils/user-session.utils";
 import HomeService from "./home.service";
@@ -34,9 +35,22 @@ export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState();
   const [mostLookedFor, setMostLookedFor] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const onFavourite = async () => {
     navigation.navigate("FavouriteScreen");
   };
+
+  const [refreshing, setRefreshing] = useState(false); // refresh refreshcontrol
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+  const handleRefresh = useCallback(() => {
+    setRefreshing(true);
+    initData();
+
+    wait(2000).then(() => setRefreshing(false));
+  }, []);
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -55,15 +69,21 @@ export default function HomeScreen() {
 
     setUserData(data);
   };
+  const onGetServiceCategory = async () => {
+    try {
+      const data = await getServiceCategory();
+      const firstCategoryId = data.data[0]?.serviceCategoryId; // Ambil ID kategori pertama
+      setSelectedCategory(firstCategoryId); // Set kategori pertama sebagai yang dipilih
+      setServiceCategoryData(data.data); // Set data kategori
 
-  const onGetServiceCategory = () => {
-    getServiceCategory().then((data) => {
-      setSelectedCategory(data.data[0].serviceCategoryId);
-      setServiceCategoryData(data.data);
-
-      onGetServiceByCategory(selectedCategory);
-    });
+      if (firstCategoryId) {
+        onGetServiceByCategory(firstCategoryId); // Ambil data berdasarkan kategori pertama
+      }
+    } catch (error) {
+      console.error("Error fetching service categories:", error);
+    }
   };
+
 
   const onGetBanner = () => {
     HomeService.getBanner().then((res) => {
@@ -71,15 +91,21 @@ export default function HomeScreen() {
     });
   };
 
-  const onGetServiceByCategory = (params) => {
-    ServicesService.getServices(params, true).then((res) => {
+  const onGetServiceByCategory = async (categoryId) => {
+    try {
       setIsLoading(true);
+      const res = await ServicesService.getServices(categoryId, true);
       setMostLookedFor(res.data);
-    });
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}>
         <View style={styles.container}>
           <StatusBar
             translucent={false}
@@ -173,7 +199,16 @@ export default function HomeScreen() {
 
           <View style={styles.KategoriContainer}>
             <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-              {mostLookedFor &&
+              {isLoading ? ( // Tampilkan loader jika sedang memuat
+                <View style={[styles.noDataWrapper]}>
+                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>Loading...</Text>
+                </View>
+              ) : mostLookedFor.length === 0 ? ( // Tampilkan jika data kosong
+                <View style={[styles.noDataWrapper]}>
+                  <Image source={ICONS.icon_nodata} style={styles.icon_empty} />
+                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>There is no data</Text>
+                </View>
+              ) : ( // Jika data tersedia, render item
                 mostLookedFor.map((item, index) => (
                   <TouchableOpacity key={index} style={styles.kategoriBox}>
                     <View style={styles.kategoriBox_Left}>
@@ -183,25 +218,13 @@ export default function HomeScreen() {
                         }}
                         style={styles.kategoriImage}
                       />
-
-                      {/* <TouchableOpacity style={styles.likeContainer}>
-                        <Image
-                          source={ICONS.icon_heart}
-                          style={{
-                            ...styles.icon_Heart_style,
-                            tintColor: COLORS.pink_solid,
-                          }}
-                        />
-                      </TouchableOpacity> */}
                     </View>
                     <View style={styles.ketegoriBox_Right}>
                       <View style={styles.keterangan_Top}>
                         <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
                           {item.serviceCategoryName}
                         </Text>
-                        <Text style={FontStyle.Manrope_Bold_16}>
-                          {item.serviceName}
-                        </Text>
+                        <Text style={FontStyle.Manrope_Bold_16}>{item.serviceName}</Text>
                         <Text
                           style={FontStyle.NunitoSans_Regular_12_grey}
                           numberOfLines={2}
@@ -215,28 +238,16 @@ export default function HomeScreen() {
                         </Text>
 
                         <TouchableOpacity style={styles.buttonBoking}>
-                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>
-                            Booking
-                          </Text>
+                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>Booking</Text>
                         </TouchableOpacity>
                       </View>
                     </View>
                   </TouchableOpacity>
-                ))}
-
-              {mostLookedFor.length == 0 && (
-                <View style={[styles.noDataWrapper]}>
-                  <Text>There is no data</Text>
-                </View>
-              )}
-
-              {isLoading && (
-                <View style={[styles.noDataWrapper]}>
-                  <Text>Loading...</Text>
-                </View>
+                ))
               )}
             </ScrollView>
           </View>
+
         </View>
       </ScrollView>
     </SafeAreaView>

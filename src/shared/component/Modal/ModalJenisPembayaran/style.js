@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginVertical: responsiveScreenWidth(2),
     justifyContent: "space-between",
-    shadowColor: "#d8d8d8",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 3,
     shadowRadius: 2,
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   },
   kategoriImage: {
     width: responsiveScreenWidth(15),
-    height: responsiveScreenHeight(12),
+    height: responsiveScreenWidth(15),
     resizeMode: "contain",
   },
   icon_Right: {
@@ -82,6 +82,34 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: responsiveScreenWidth(2),
     borderBottomLeftRadius: responsiveScreenWidth(2),
     resizeMode: "contain",
+  },
+  //header custom container style
+  headerContainer: {
+    backgroundColor: "white",
+    width: responsiveScreenWidth(100),
+    height: responsiveScreenHeight(8),
+    flexDirection: "row",
+    alignItems: "center",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  headerButtonLeft: {
+    width: responsiveScreenWidth(15),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  headerTitleContainer: {
+    width: responsiveScreenWidth(70),
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  btnImage: {
+    width: responsiveScreenWidth(7),
+    height: responsiveScreenWidth(7),
+    tintColor: COLORS.cyan,
   },
 });
 

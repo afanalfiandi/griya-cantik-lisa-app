@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ToastAndroid } from "react-native";
 import { CustomToast } from "../component/Toast/CustomToast";
 
-const DATA_KEY = "productList";
+const DATA_KEY = "selectedServices";
 const DATA_KEY_riwayat = "riwayat_checkout";
 
 export const getUserSession = async (setData) => {
@@ -17,6 +17,54 @@ export const getUserSession = async (setData) => {
     console.error("Error fetching user session:", error);
   }
 };
+
+
+
+
+// **CREATE**: Tambah Data Baru
+export const addDataServices = async (newData, toast) => {
+  try {
+    const existingData = await getDataServices();
+    const updatedData = [...(existingData || []), newData];
+    await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
+    console.log("Data berhasil ditambahkan!");
+    CustomToast(toast, "Berhasil ditambahkan ke Disukai!");
+  } catch (error) {
+    console.error("Gagal menambahkan data:", error);
+  }
+};
+
+// **READ**: Ambil Data
+export const getDataServices = async () => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(DATA_KEY);
+    return jsonValue != null ? JSON.parse(jsonValue) : [];
+  } catch (error) {
+    console.error("Gagal membaca data:", error);
+    return [];
+  }
+};
+
+
+// **DELETE**: Hapus Data Berdasarkan serviceId
+export const deleteDataServices = async (serviceId, toast) => {
+  try {
+    const existingData = await getDataServices();
+    const updatedData = existingData.filter((item) => item.serviceId !== serviceId);
+    await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
+    console.log("Data berhasil dihapus!");
+    CustomToast(toast, "Berhasil dihapus dari Disukai!");
+  } catch (error) {
+    console.error("Gagal menghapus data:", error);
+  }
+};
+
+
+
+
+
+
+
 
 // **CREATE**: Tambah Data Baru
 export const addDataLiked = async (newData, toast) => {

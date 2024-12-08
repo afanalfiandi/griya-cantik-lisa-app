@@ -1,12 +1,4 @@
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
 import styles from "./style";
 import ICONS from "../../shared/consts/icon.const";
 import FontStyle from "../../shared/style/font.style";
@@ -19,31 +11,19 @@ import CustomTextArea from "../../shared/component/Textinput/CustomTextArea";
 import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import HeaderTop from "../../shared/component/Header/Header";
-import {
-  calculateTotalPrice,
-  calculateTotalPriceToString,
-  formatRupiah,
-  normalizeData,
-  Print_r,
-} from "../../shared/helper/helper";
+import { calculateTotalPrice, calculateTotalPriceToString, formatRupiah, normalizeData, Print_r } from "../../shared/helper/helper";
 import ModalJenisPembayaran from "../../shared/component/Modal/ModalJenisPembayaran/ModalJenisPembayaran";
-import {
-  addItemToSelectedLayanan,
-  removeItemFromSelectedLayanan,
-} from "./booking.config";
-import { addDataRiwayat } from "../../shared/services/Asycnstorage";
-import { DATA_waktu } from "../../shared/services/DATA_waktu";
-import {
-  PAYMETHOD_MEDIA_BASE_URL,
-  SERVICE_MEDIA_BASE_URL,
-  SPECIALIST_MEDIA_BASE_URL,
-} from "../../shared/consts/base-url.const";
+import { addDataRiwayat, deleteDataServices, getDataServices } from "../../shared/services/Asycnstorage";
+import { PAYMETHOD_MEDIA_BASE_URL, SERVICE_MEDIA_BASE_URL, SPECIALIST_MEDIA_BASE_URL, } from "../../shared/consts/base-url.const";
 import { getSpecialist } from "../../shared/services/specialist.service";
 import { getSlot } from "../../shared/services/slot.service";
 import { getPaymentMethod } from "../../shared/services/payment-method.service";
 import { useToast } from "react-native-toast-notifications";
-export default function BookingScreen({ route }) {
-  const prevService = route.params.data;
+import UserSessionUtils from "../../shared/utils/user-session.utils";
+import moment from "moment";
+import { transactionService } from "./booking.config";
+export default function BookingScreen({ }) {
+
   const toast = useToast();
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
@@ -56,52 +36,103 @@ export default function BookingScreen({ route }) {
   const [selectedService, setSelectedService] = useState([]);
   const [catatan, setCatatan] = useState("");
   const [Pembayaran, setPembayaran] = useState([]);
-
   const [specialistData, setSpecialistData] = useState([]);
   const [slotData, setSlotData] = useState([]);
   const [paymentMethodData, setPaymentMethodData] = useState([]);
-
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-
   const catatanRef = createRef();
 
-  const toggleModal = () => {
-    setModalDetail(!ModalDetail);
-  };
-  const toggleModalPembayaran = () => {
-    setModalPembayaran(!ModalPembayaran);
-  };
-  const selectItem = (item) => {
-    setSelectedItem(item);
-    toggleModal();
-  };
-  const sendToCheckout = () => {
-    const data = {
-      layanan: selectedService,
-      spesialis: selectedSpesialisName,
-      tanggal: TanggalBooking,
-      waktu: selectedTime,
-      jenisPembayaran: Pembayaran,
-      catatan: catatan,
-      totalHarga: calculateTotalPrice(selectedService),
-    };
-    addDataRiwayat(data, toast);
+  const toggleModal = () => { setModalDetail(!ModalDetail); };
+  const toggleModalPembayaran = () => { setModalPembayaran(!ModalPembayaran); };
+  const selectItem = (item) => { setSelectedItem(item); toggleModal(); };
 
-    navigation.navigate("CheckoutScreen", {
-      data: data,
+  const sendToCheckout = async () => {
+    // console.log(selectedTime)
+    const userData = JSON.parse(await UserSessionUtils.getUserSession());
+
+    const services = selectedService.map((item, index) => {
+      return { [`service[${index}]`]: item.serviceId };
     });
-    // Print_r(data);
+
+
+    const serviceData = services.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const serviceIds = selectedService.map((item) => item.serviceId);
+    const payload = {
+      customerID: userData.customerID,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      subtotal: calculateTotalPrice(selectedService),
+      slotID: selectedTime,
+      paymentMethodID: selectedPaymentMethod.paymentMethodID,
+      specialistID: selectedSpesialisID,
+      bookingDate: moment().format("YYYY-MM-DD HH:mm:ss"),
+      dateFor: TanggalBooking,
+      notes: catatan,
+      paymentType: selectedPaymentMethod.payment_type,
+      bank: selectedPaymentMethod.value,
+      service: serviceIds,
+      // ...serviceData,
+    };
+
+    Print_r(payload);
+
+    try {
+      const result = await transactionService(payload);
+      if (result) {
+
+        navigation.navigate('CheckoutScreen', { data: result.midtrans_response })
+
+        console.log(result);
+
+        setSelectedPaymentMethod([]);
+        setSelectedService([]);
+        setSelectedTime(null);
+        setSelectedSpesialisID(null);
+        setSelectedSpesialisName(null);
+        setTanggalBooking("");
+      } else {
+
+      }
+
+
+    } catch (error) {
+      console.log(error);
+
+    }
+
   };
 
+  const getDataUser = async () => {
+    const userData = JSON.parse(await UserSessionUtils.getUserSession());
+
+    Print_r(userData);
+  };
+
+
+
+  const fetchDataRiwayat = async () => {
+    const allData = await getDataServices();
+    setSelectedService(allData || []);
+    fetchDataRiwayat2()
+  };
+
+
+  const fetchDataRiwayat2 = async () => {
+    const allData = await getDataServices();
+    setSelectedService(allData || []);
+  };
+
+  // Fungsi untuk menghapus layanan
+  const onDeleteServices = (services) => {
+    deleteDataServices(services.serviceId, toast);
+    fetchDataRiwayat(); // Memanggil fetchDataRiwayat setelah penghapusan
+  };
   useFocusEffect(
     React.useCallback(() => {
-      const normalizedData = normalizeData(prevService);
-      normalizedData.forEach((item) =>
-        addItemToSelectedLayanan(item, setSelectedService)
-      );
-
+      setSelectedService([]);
+      fetchDataRiwayat();
       initData();
-    }, [prevService])
+    }, [])
   );
 
   const initData = () => {
@@ -133,7 +164,7 @@ export default function BookingScreen({ route }) {
           barStyle={"dark-content"}
           backgroundColor={"white"}
         />
-        <HeaderTop title={"Booking Layanan"} />
+        <HeaderTop title={"Booking Layanan"} route={'HomeScreen'} />
         <ScrollView>
           <View style={styles.contentContainer}>
             <View style={styles.jenisLayananTambah_Container}>
@@ -141,10 +172,11 @@ export default function BookingScreen({ route }) {
               <TouchableOpacity
                 style={styles.TambahStyle}
                 onPress={() =>
-                  navigation.navigate("ServicesScreen", {
-                    prevService: prevService,
-                  })
+                  navigation.navigate("ServicesScreen")
+                  // Print_r(prevService)
                 }
+
+
               >
                 <Image style={styles.btnPlus} source={ICONS.icon_plus} />
                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>Tambah</Text>
@@ -191,10 +223,7 @@ export default function BookingScreen({ route }) {
                           <TouchableOpacity
                             style={styles.plusminus_style}
                             onPress={() =>
-                              removeItemFromSelectedLayanan(
-                                item.serviceId,
-                                setSelectedService
-                              )
+                              onDeleteServices(item)
                             }
                           >
                             <Image
@@ -236,19 +265,19 @@ export default function BookingScreen({ route }) {
                         style={{
                           ...styles.spesialisPhotos_Container,
                           borderColor:
-                            selectedSpesialisID === item.specialistId
+                            selectedSpesialisID === item.specialistID
                               ? COLORS.purple
                               : COLORS.grey,
                           borderWidth:
-                            selectedSpesialisID === item.specialistId
+                            selectedSpesialisID === item.specialistID
                               ? responsiveScreenWidth(1)
                               : 0,
                         }}
                         onPress={() => {
                           setSelectedSpesialisID(
-                            selectedSpesialisID === item.specialistId
+                            selectedSpesialisID === item.specialistID
                               ? null
-                              : item.specialistId
+                              : item.specialistID
                           );
                           setSelectedSpesialisName(
                             setSelectedSpesialisName === item.specialistName
@@ -263,7 +292,7 @@ export default function BookingScreen({ route }) {
                           }}
                           style={styles.spesialisPhotos_Style}
                         />
-                        {selectedSpesialisID === item.specialistId && (
+                        {selectedSpesialisID === item.specialistID && (
                           <View style={styles.spesialisFocus}>
                             <Image
                               style={styles.iconCheck}
@@ -298,16 +327,16 @@ export default function BookingScreen({ route }) {
                     style={{
                       ...styles.KategoriStyle,
                       borderColor:
-                        item.time == selectedTime ? COLORS.purple : COLORS.grey,
+                        item.slotId == selectedTime ? COLORS.purple : COLORS.grey,
                       backgroundColor:
-                        item.time == selectedTime
+                        item.slotId == selectedTime
                           ? COLORS.blue_bg
                           : COLORS.white,
                       opacity: item.isDisable ? 0.3 : 1,
                     }}
                     onPress={() => {
                       setSelectedTime(
-                        selectedTime === item.time ? null : item.time
+                        selectedTime === item.slotId ? null : item.slotId
                       );
                       // setSelectedSpesialisName(setSelectedSpesialisName === item.specialistName ? null : item.specialistName);
                     }}
