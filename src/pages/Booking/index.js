@@ -69,7 +69,6 @@ export default function BookingScreen({}) {
   };
 
   const sendToCheckout = async () => {
-    // console.log(selectedTime)
     const userData = JSON.parse(await UserSessionUtils.getUserSession());
 
     const services = selectedService.map((item, index) => {
@@ -98,8 +97,6 @@ export default function BookingScreen({}) {
       // ...serviceData,
     };
 
-    Print_r(payload);
-
     try {
       const result = await transactionService(payload);
       if (result) {
@@ -107,25 +104,20 @@ export default function BookingScreen({}) {
           data: result.midtrans_response,
         });
 
-        console.log(result);
-
         setSelectedPaymentMethod([]);
         setSelectedService([]);
         setSelectedTime(null);
         setSelectedSpesialisID(null);
         setSelectedSpesialisName(null);
         setTanggalBooking("");
-      } else {
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   const getDataUser = async () => {
     const userData = JSON.parse(await UserSessionUtils.getUserSession());
-
-    Print_r(userData);
   };
 
   const fetchDataRiwayat = async () => {
@@ -188,10 +180,7 @@ export default function BookingScreen({}) {
               <Text style={FontStyle.Manrope_Bold_14}>Jenis Layanan</Text>
               <TouchableOpacity
                 style={styles.TambahStyle}
-                onPress={
-                  () => navigation.navigate("ServicesScreen")
-                  // Print_r(prevService)
-                }
+                onPress={() => navigation.navigate("ServicesScreen")}
               >
                 <Image style={styles.btnPlus} source={ICONS.icon_plus} />
                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>Tambah</Text>

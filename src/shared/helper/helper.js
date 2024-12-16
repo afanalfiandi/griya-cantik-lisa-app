@@ -23,7 +23,6 @@ export const calculateTotalPrice = (DATA) => {
 };
 
 export const calculateTotalPriceToString = (DATA) => {
-  // {calculateTotalPrice().toLocaleString()}
   return DATA.reduce(
     (total, item) => total + Number(item.price),
     0

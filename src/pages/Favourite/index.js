@@ -31,7 +31,6 @@ export default function FavouriteScreen() {
     setModalDetail(!ModalDetail);
   };
   const selectItem = (item) => {
-    console.log(item);
     setSelectedItem(item);
     toggleModal();
   };
@@ -39,7 +38,6 @@ export default function FavouriteScreen() {
   const fetchDataLiked = async () => {
     // Ambil Data
     const allData = await getDataLiked();
-    Print_r(allData);
     setDataLiked(allData);
   };
 

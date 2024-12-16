@@ -23,8 +23,6 @@ export const addDataServices = async (newData) => {
     const existingData = await getDataServices();
     const updatedData = [...(existingData || []), newData];
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
-    console.log("Data berhasil ditambahkan!");
-    Alert.alert("Berhasil ditambahkan ke Disukai!");
   } catch (error) {
     Alert.alert("Gagal menambahkan data");
     console.error("Gagal menambahkan data:", error);
@@ -88,7 +86,7 @@ export const updateDataLiked = async (serviceId, updatedFields) => {
       item.serviceId === serviceId ? { ...item, ...updatedFields } : item
     );
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
-    console.log("Data berhasil diperbarui!");
+    Alert.alert("Data berhasil diperbarui!");
   } catch (error) {
     console.error("Gagal memperbarui data:", error);
   }
@@ -102,8 +100,6 @@ export const deleteDataLiked = async (serviceId) => {
       (item) => item.serviceId !== serviceId
     );
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
-    console.log("Data berhasil dihapus!");
-    Alert.alert("Berhasil dihapus dari Disukai!");
   } catch (error) {
     Alert.alert("Gagal menghapus data");
     console.error("Gagal menghapus data:", error);
@@ -151,7 +147,6 @@ export const getDataRiwayat = async () => {
 
 //     // Ambil Data
 //     const allData = await getData();
-//     console.log('Semua Data:', allData);
 
 //     // Perbarui Data
 //     await updateData(2, { harga: 350000, isLoved: true });
@@ -161,5 +156,4 @@ export const getDataRiwayat = async () => {
 
 //     // Ambil Data Lagi Setelah Perubahan
 //     const updatedData = await getData();
-//     console.log('Data Setelah Perubahan:', updatedData);
 //   };

@@ -36,7 +36,6 @@ export default function CheckoutScreen({ route }) {
       getTransactionByNymber(getData.order_id).then((res) => {
         if (res) {
           setTransactionData(res.data);
-          Print_r(res.data); // Gunakan res.data langsung
         }
       });
     }
@@ -45,7 +44,6 @@ export default function CheckoutScreen({ route }) {
   useFocusEffect(
     React.useCallback(() => {
       onGetTransaction();
-      console.log("Route Params:", route.params);
     }, [getData])
   );
 
