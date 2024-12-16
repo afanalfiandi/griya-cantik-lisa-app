@@ -50,7 +50,6 @@ export default function BookingScreen({}) {
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedService, setSelectedService] = useState([]);
   const [catatan, setCatatan] = useState("");
-  const [Pembayaran, setPembayaran] = useState([]);
   const [specialistData, setSpecialistData] = useState([]);
   const [slotData, setSlotData] = useState([]);
   const [paymentMethodData, setPaymentMethodData] = useState([]);
@@ -329,18 +328,18 @@ export default function BookingScreen({}) {
                     style={{
                       ...styles.KategoriStyle,
                       borderColor:
-                        item.slotId == selectedTime
+                        item.slotID == selectedTime
                           ? COLORS.purple
                           : COLORS.grey,
                       backgroundColor:
-                        item.slotId == selectedTime
+                        item.slotID == selectedTime
                           ? COLORS.blue_bg
                           : COLORS.white,
                       opacity: item.isDisable ? 0.3 : 1,
                     }}
                     onPress={() => {
                       setSelectedTime(
-                        selectedTime === item.slotId ? null : item.slotId
+                        selectedTime === item.slotID ? null : item.slotID
                       );
                       // setSelectedSpesialisName(setSelectedSpesialisName === item.specialistName ? null : item.specialistName);
                     }}
