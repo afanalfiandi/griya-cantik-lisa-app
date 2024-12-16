@@ -90,8 +90,6 @@ export default function ServicesScreen({}) {
   const fetchDataRiwayat2 = async () => {
     const allData = await getDataServices();
     setSelectedService(allData || []);
-
-    console.log("DATA SERVICES", selectedService);
   };
 
   // Fungsi untuk menghapus layanan
@@ -154,7 +152,6 @@ export default function ServicesScreen({}) {
 
   const getServiceByCategory = (selectedCategory) => {
     ServicesService.getServices(selectedCategory, true).then((res) => {
-      // console.log("Services Data:", res.data); // Debug log
       setServicesData(res.data);
     });
   };
@@ -313,13 +310,13 @@ export default function ServicesScreen({}) {
             <Text style={FontStyle.Manrope_Bold_14}>
               Total{" "}
               <Text style={FontStyle.NunitoSans_Regular_14}>
-                ({Print_r(selectedService)} Layanan)
+                {selectedService.length} (Layanan)
               </Text>
             </Text>
             <Text
               style={{ ...FontStyle.Manrope_Bold_20, color: COLORS.purple }}
             >
-              Rp. {calculateTotalPrice2(selectedService)}
+              Rp. {calculateTotalPrice2(selectedService).toLocaleString()}
             </Text>
           </View>
           <View style={styles.FloatingBottomRight}>
