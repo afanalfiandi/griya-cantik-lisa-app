@@ -42,6 +42,7 @@ export const Print_r = (data) => {
 
 export const copyToClipboard = async (text) => {
   await Clipboard.setStringAsync(text);
+  Alert.alert("Berhasil disalin!");
 };
 
 export const NavigateTo = (address) => {

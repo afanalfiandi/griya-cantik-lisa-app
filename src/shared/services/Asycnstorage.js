@@ -48,7 +48,7 @@ export const deleteDataServices = async (serviceId) => {
       (item) => item.serviceId !== serviceId
     );
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
-    Alert.alert("Berhasil dihapus dari Disukai!");
+    Alert.alert("Berhasil dihapus!");
   } catch (error) {
     console.error("Gagal menghapus data:", error);
   }
@@ -60,7 +60,7 @@ export const addDataLiked = async (newData) => {
     const existingData = await getDataLiked();
     const updatedData = [...(existingData || []), newData];
     await AsyncStorage.setItem(DATA_KEY, JSON.stringify(updatedData));
-    Alert.alert("Berhasil ditambahkan ke Disukai!");
+    Alert.alert("Berhasil ditambahkan!");
   } catch (error) {
     Alert.alert("Gagal menambahkan data!");
     console.error("Gagal menambahkan data:", error);

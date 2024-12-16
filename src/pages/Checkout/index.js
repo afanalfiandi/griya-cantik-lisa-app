@@ -32,10 +32,10 @@ export default function CheckoutScreen({ route }) {
   const [transactionData, setTransactionData] = useState({});
 
   const onGetTransaction = async () => {
-    if (getData.order_id) {
-      getTransactionByNymber(getData.order_id).then((res) => {
+    if (getData.midtrans_response.order_id) {
+      getTransactionByNymber(getData.midtrans_response.order_id).then((res) => {
         if (res) {
-          setTransactionData(res.data);
+          setTransactionData(res.data[0]);
         }
       });
     }
@@ -61,25 +61,21 @@ export default function CheckoutScreen({ route }) {
                   <CheckoutContainerVertical
                     title={"Tanggal"}
                     label={
-                      transactionData.length > 0 &&
-                      transactionData[0].bookingDate
-                        ? convertToIndonesianDate(
-                            transactionData[0].bookingDate
-                          )
+                      transactionData
+                        ? transactionData.bookingDate
                         : "Invalid Date"
                     }
                   />
                   <CheckoutContainerVertical
                     title={"Waktu"}
-                    label={"invalid Time"}
+                    label={transactionData ? transactionData.time : "Unknown"}
                     paddingLeft={6}
                   />
                   <CheckoutContainerVertical
                     title={"Spesialis"}
                     label={
-                      transactionData.length > 0 &&
-                      transactionData[0].specialistName
-                        ? transactionData[0].specialistName
+                      transactionData
+                        ? transactionData.specialistName
                         : "Unknown"
                     }
                   />
@@ -95,9 +91,9 @@ export default function CheckoutScreen({ route }) {
                   Layanan
                 </Text>
 
-                {transactionData.length > 0 &&
-                  transactionData[0].service &&
-                  transactionData[0].service.map((item, index) => (
+                {transactionData &&
+                  transactionData.service &&
+                  transactionData.service.map((item, index) => (
                     <CheckoutContainerHorizontal
                       key={index}
                       title={item.serviceName || "Unknown Service"}
@@ -112,8 +108,8 @@ export default function CheckoutScreen({ route }) {
                 <CheckoutContainerHorizontal
                   title={"Sub Total"}
                   label={
-                    transactionData.length > 0 && transactionData[0].subtotal
-                      ? formatRupiah(transactionData[0].subtotal)
+                    transactionData && transactionData.subtotal
+                      ? formatRupiah(transactionData.subtotal)
                       : "Unknown"
                   }
                 />
@@ -128,7 +124,7 @@ export default function CheckoutScreen({ route }) {
                   <View style={styles.PembayaranImg}>
                     {/* <Image
                       source={{
-                        uri: `${PAYMETHOD_MEDIA_BASE_URL}${transactionData.length > 0 && transactionData[0].paymentMethod
+                        uri: `${PAYMETHOD_MEDIA_BASE_URL}${transactionData && transactionData[0].paymentMethod
                         ? transactionData[0].paymentMethod
                         : "Unknown"}`,
                       }}
@@ -138,20 +134,19 @@ export default function CheckoutScreen({ route }) {
                   </View>
                   <View style={styles.pembayaranDetail}>
                     <Text style={FontStyle.Manrope_Bold_14}>
-                      {transactionData.length > 0 &&
-                      transactionData[0].paymentMethod
-                        ? transactionData[0].paymentMethod
+                      {transactionData
+                        ? transactionData.paymentMethod
                         : "Unknown"}
                     </Text>
                     <Text style={FontStyle.NunitoSans_Regular_14}>
                       {getData
-                        ? getData.va_numbers[0].va_number
+                        ? transactionData.vaNumber
                         : "Nomor Tidak Tersedia"}
                     </Text>
                   </View>
                   <TouchableOpacity
                     style={styles.pembayaranSalin}
-                    onPress={() => copyToClipboard("aslkdhjaksjhdashd")}
+                    onPress={() => copyToClipboard(transactionData.vaNumber)}
                   >
                     <Text style={FontStyle.NunitoSans_Regular_14}>Salin</Text>
                   </TouchableOpacity>

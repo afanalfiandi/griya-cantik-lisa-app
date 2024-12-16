@@ -44,13 +44,13 @@ const styles = StyleSheet.create({
 
   kategoriBox: {
     width: responsiveScreenWidth(94),
-    paddingVertical: responsiveScreenWidth(1),
+    paddingVertical: responsiveScreenWidth(2),
     backgroundColor: "white",
     borderRadius: responsiveScreenWidth(5),
     flexDirection: "row",
     marginVertical: responsiveScreenWidth(2),
     justifyContent: "space-between",
-    shadowColor: "#000",
+    shadowColor: "rgba(0, 0, 0, 0.2)",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 3,
     shadowRadius: 2,

@@ -41,6 +41,7 @@ import { transactionService } from "./booking.config";
 import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 export default function BookingScreen({}) {
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
   const [ModalDetail, setModalDetail] = useState(false);
   const [TanggalBooking, setTanggalBooking] = useState("");
   const [ModalPembayaran, setModalPembayaran] = useState(false);
@@ -68,6 +69,7 @@ export default function BookingScreen({}) {
   };
 
   const sendToCheckout = async () => {
+    setIsLoading(true);
     const userData = JSON.parse(await UserSessionUtils.getUserSession());
 
     const services = selectedService.map((item, index) => {
@@ -99,8 +101,10 @@ export default function BookingScreen({}) {
     try {
       const result = await transactionService(payload);
       if (result) {
+        console.log("result => ", result);
+        setIsLoading(false);
         navigation.navigate("CheckoutScreen", {
-          data: result.midtrans_response,
+          data: result,
         });
 
         setSelectedPaymentMethod([]);
@@ -147,12 +151,15 @@ export default function BookingScreen({}) {
     getSpecialist().then((res) => {
       if (res) {
         setSpecialistData(res.data);
+        setSelectedSpesialisID(res.data[0].specialistID);
+        setSelectedSpesialisName(res.data[0].specialistName);
       }
     });
 
     getSlot().then((res) => {
       if (res) {
         setSlotData(res.data);
+        setSelectedTime(res.data[0].slotID);
       }
     });
 
@@ -412,7 +419,7 @@ export default function BookingScreen({}) {
           <View style={styles.FloatingBottomRight}>
             <ButtonPurple
               ButtonWidth={53}
-              title={"Booking"}
+              title={isLoading ? "Loading" : "Booking"}
               ButtonHeight={55}
               onPress={() => sendToCheckout()}
             />

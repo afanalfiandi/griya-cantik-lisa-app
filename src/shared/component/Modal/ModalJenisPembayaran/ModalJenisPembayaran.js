@@ -7,6 +7,7 @@ import {
   View,
   ScrollView,
   StatusBar,
+  SafeAreaView,
 } from "react-native";
 import styles from "./style";
 import ICONS from "../../../consts/icon.const.js";
@@ -32,7 +33,7 @@ const ModalJenisPembayaran = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.modalContainer}>
+      <SafeAreaView style={styles.modalContainer}>
         <StatusBar
           translucent={false}
           barStyle={"dark-content"}
@@ -82,7 +83,7 @@ const ModalJenisPembayaran = ({
             </View>
           </ScrollView>
         </View>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };

@@ -25,7 +25,7 @@
     },
     "plugins": ["expo-font"],
     "extra": {
-      "BASE_URL": "http://192.168.168.241:8000"
+      "BASE_URL": "https://griya-cantik-lisa.my.id"
     }
   }
 }
