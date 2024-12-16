@@ -17,7 +17,7 @@ import {
 import ButtonPurple from "../../Button/ButtonPurple.js";
 import { useFocusEffect } from "@react-navigation/native";
 import { formatRupiah } from "../../../helper/helper.js";
-import { SERVICE_MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
+import { MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
 
 const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
   const scrollViewRef = useRef(null);
@@ -79,7 +79,7 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
                       <View key={index}>
                         <Image
                           source={{
-                            uri: `${SERVICE_MEDIA_BASE_URL}${item.img}`,
+                            uri: `${MEDIA_BASE_URL}${item.img}`,
                           }}
                           style={styles.imageDetail}
                         />

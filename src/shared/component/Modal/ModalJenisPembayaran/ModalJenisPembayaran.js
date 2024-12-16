@@ -11,9 +11,7 @@ import {
 import styles from "./style";
 import ICONS from "../../../consts/icon.const.js";
 import FontStyle from "../../../style/font.style.js";
-import HeaderTop from "../../Header/Header.js";
-import { DATA_Payment } from "../../../services/DATA_Payment.js";
-import { PAYMETHOD_MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
+import { MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
 
 const ModalJenisPembayaran = ({
   children,
@@ -42,9 +40,10 @@ const ModalJenisPembayaran = ({
         />
         <View style={styles.modal_style}>
           <View style={styles.headerContainer}>
-            <TouchableOpacity style={styles.headerButtonLeft} onPress={() =>
-              onClose()
-            }>
+            <TouchableOpacity
+              style={styles.headerButtonLeft}
+              onPress={() => onClose()}
+            >
               <Image style={styles.btnImage} source={ICONS.icon_left} />
             </TouchableOpacity>
             <View style={styles.headerTitleContainer}>
@@ -62,7 +61,7 @@ const ModalJenisPembayaran = ({
                   <View style={styles.kategoriBox_Left}>
                     <Image
                       source={{
-                        uri: `${PAYMETHOD_MEDIA_BASE_URL}${item.img}`,
+                        uri: `${MEDIA_BASE_URL}${item.img}`,
                       }}
                       style={styles.kategoriImage}
                     />

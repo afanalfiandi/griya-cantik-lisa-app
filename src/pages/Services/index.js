@@ -14,7 +14,10 @@ import Layanan_Horizontal from "../../shared/component/Layanan/Layanan_Horizonta
 import COLORS from "../../shared/consts/colors.const";
 import { DATA_Kategori } from "../../shared/services/DATA_Kategori";
 import React, { useState } from "react";
-import { responsiveScreenHeight, responsiveScreenWidth } from "react-native-responsive-dimensions";
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from "react-native-responsive-dimensions";
 import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -23,17 +26,14 @@ import { DATA_Product } from "../../shared/services/DATA_Product";
 import { getServiceCategory } from "../../shared/services/service_category";
 import ServicesService from "../../shared/services/services.service";
 import {
-  SERVICE_CATEGORY_MEDIA_BASE_URL,
-  SERVICE_MEDIA_BASE_URL,
-} from "../../shared/consts/base-url.const";
-import { addDataServices, deleteDataServices, getDataServices } from "../../shared/services/Asycnstorage";
-import { useToast } from "react-native-toast-notifications";
+  addDataServices,
+  deleteDataServices,
+  getDataServices,
+} from "../../shared/services/Asycnstorage";
+import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
-export default function ServicesScreen({ }) {
-
-
+export default function ServicesScreen({}) {
   const navigation = useNavigation();
-  const toast = useToast();
   const [ModalDetail, setModalDetail] = useState(false);
 
   const [serviceCategory, setServiceCategory] = useState([]);
@@ -41,7 +41,6 @@ export default function ServicesScreen({ }) {
   const [selectedCategory, setSelectedCategory] = useState(0);
   const [selectedCategoryLabel, setSelectedCategoryLabel] = useState();
   const [selectedService, setSelectedService] = useState([]);
-
 
   // const selectItem = (item) => {
   //   const isSelected =
@@ -58,8 +57,6 @@ export default function ServicesScreen({ }) {
   //   } else {
   //     setSelectedService((exist) => [...exist, item]);
   //   }
-
-
 
   //   Print_r(selectedService);  // Cek apakah data sudah ter-update
   // };
@@ -87,26 +84,25 @@ export default function ServicesScreen({ }) {
   const fetchDataRiwayat = async () => {
     const allData = await getDataServices();
     setSelectedService(allData || []);
-    fetchDataRiwayat2()
+    fetchDataRiwayat2();
   };
-
 
   const fetchDataRiwayat2 = async () => {
     const allData = await getDataServices();
     setSelectedService(allData || []);
 
-    console.log('DATA SERVICES', selectedService)
+    console.log("DATA SERVICES", selectedService);
   };
 
   // Fungsi untuk menghapus layanan
   const onDeleteServices = (services) => {
-    deleteDataServices(services.serviceId, toast);
+    deleteDataServices(services.serviceId);
     fetchDataRiwayat(); // Memanggil fetchDataRiwayat setelah penghapusan
   };
 
   // Fungsi untuk menghapus layanan
   const onAddServices = (services) => {
-    addDataServices(services, toast);
+    addDataServices(services);
 
     fetchDataRiwayat(); // Memanggil fetchDataRiwayat setelah penghapusan
   };
@@ -116,17 +112,16 @@ export default function ServicesScreen({ }) {
 
     const addPrices = (item) => {
       if (Array.isArray(item)) {
-        item.forEach(addPrices);  // Rekursi untuk array dalam array
+        item.forEach(addPrices); // Rekursi untuk array dalam array
       } else if (item.price) {
-        total += parseInt(item.price, 10);  // Pastikan harga dikonversi ke integer
+        total += parseInt(item.price, 10); // Pastikan harga dikonversi ke integer
       }
     };
 
-    addPrices(data);  // Menambahkan harga dari semua layanan yang dipilih
+    addPrices(data); // Menambahkan harga dari semua layanan yang dipilih
 
     return total;
   };
-
 
   const filteredProducts = selectedCategory
     ? DATA_Product.filter((product) => product.categoryId === selectedCategory)
@@ -138,10 +133,8 @@ export default function ServicesScreen({ }) {
       setSelectedService([]);
       fetchDataRiwayat();
       initData(); // Pastikan inisialisasi data dilakukan
-
     }, [])
   );
-
 
   const initData = () => {
     onGetServiceCategory();
@@ -159,7 +152,6 @@ export default function ServicesScreen({ }) {
     });
   };
 
-
   const getServiceByCategory = (selectedCategory) => {
     ServicesService.getServices(selectedCategory, true).then((res) => {
       // console.log("Services Data:", res.data); // Debug log
@@ -169,15 +161,16 @@ export default function ServicesScreen({ }) {
 
   const toBoking = () => {
     navigation.navigate("BookingScreen");
-  }
+  };
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.container}>
         <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
         <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.headerButtonLeft} onPress={() =>
-            toBoking()
-          }>
+          <TouchableOpacity
+            style={styles.headerButtonLeft}
+            onPress={() => toBoking()}
+          >
             <Image style={styles.btnImage} source={ICONS.icon_left} />
           </TouchableOpacity>
           <View style={styles.headerTitleContainer}>
@@ -225,7 +218,7 @@ export default function ServicesScreen({ }) {
                         <View style={styles.kategoriBox_Left}>
                           <Image
                             source={{
-                              uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                              uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
                             }}
                             style={styles.kategoriImage}
                           />
@@ -253,16 +246,20 @@ export default function ServicesScreen({ }) {
                           <TouchableOpacity
                             style={
                               selectedService.some(
-                                (selected) => selected.serviceId === item.serviceId
+                                (selected) =>
+                                  selected.serviceId === item.serviceId
                               )
                                 ? styles.minus_style
                                 : styles.plus_style
                             }
-                            onPress={() => selectedService.some(
-                              (selected) => selected.serviceId === item.serviceId
-                            )
-                              ? onDeleteServices(item)
-                              : onAddServices(item)}
+                            onPress={() =>
+                              selectedService.some(
+                                (selected) =>
+                                  selected.serviceId === item.serviceId
+                              )
+                                ? onDeleteServices(item)
+                                : onAddServices(item)
+                            }
                           >
                             <Image
                               source={
@@ -289,15 +286,21 @@ export default function ServicesScreen({ }) {
                     ))}
                   </>
                 ) : (
-                  <View style={{
-                    alignItems: 'center',
-                    width: responsiveScreenWidth(94),
-                    height: responsiveScreenHeight(60),
-                    justifyContent: 'center',
-
-                  }}>
-                    <Image source={ICONS.icon_nodata_bg} style={styles.noDataStyle} />
-                    <Text style={FontStyle.NunitoSans_Regular_12_grey}>There is no data...</Text>
+                  <View
+                    style={{
+                      alignItems: "center",
+                      width: responsiveScreenWidth(94),
+                      height: responsiveScreenHeight(60),
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Image
+                      source={ICONS.icon_nodata_bg}
+                      style={styles.noDataStyle}
+                    />
+                    <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                      There is no data...
+                    </Text>
                   </View>
                 )}
               </ScrollView>
@@ -324,9 +327,7 @@ export default function ServicesScreen({ }) {
               ButtonWidth={53}
               title={"Simpan"}
               ButtonHeight={55}
-              onPress={() =>
-                toBoking()
-              }
+              onPress={() => toBoking()}
             />
           </View>
         </View>

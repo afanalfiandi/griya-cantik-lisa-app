@@ -4,7 +4,7 @@ import { responsiveScreenWidth } from "react-native-responsive-dimensions";
 import COLORS from "../../consts/colors.const";
 import { getFontSize } from "../../helper/helper";
 import FontStyle from "../../style/font.style";
-import { SERVICE_CATEGORY_MEDIA_BASE_URL } from "../../consts/base-url.const";
+import { MEDIA_BASE_URL } from "../../consts/base-url.const";
 
 const Layanan = ({ onPress, iconLayanan, labelLayanan }) => {
   return (
@@ -12,7 +12,7 @@ const Layanan = ({ onPress, iconLayanan, labelLayanan }) => {
       <View style={[styles.LayananIcon_Container]}>
         <Image
           source={{
-            uri: `${SERVICE_CATEGORY_MEDIA_BASE_URL}${iconLayanan}`,
+            uri: `${MEDIA_BASE_URL}${iconLayanan}`,
           }}
           style={styles.LayananIcon}
         />

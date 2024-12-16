@@ -1,4 +1,12 @@
-import { Image, SafeAreaView, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import styles from "./style";
 import ICONS from "../../shared/consts/icon.const";
 import FontStyle from "../../shared/style/font.style";
@@ -11,20 +19,27 @@ import CustomTextArea from "../../shared/component/Textinput/CustomTextArea";
 import ButtonPurple from "../../shared/component/Button/ButtonPurple";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import HeaderTop from "../../shared/component/Header/Header";
-import { calculateTotalPrice, calculateTotalPriceToString, formatRupiah, normalizeData, Print_r } from "../../shared/helper/helper";
+import {
+  calculateTotalPrice,
+  calculateTotalPriceToString,
+  formatRupiah,
+  normalizeData,
+  Print_r,
+} from "../../shared/helper/helper";
 import ModalJenisPembayaran from "../../shared/component/Modal/ModalJenisPembayaran/ModalJenisPembayaran";
-import { addDataRiwayat, deleteDataServices, getDataServices } from "../../shared/services/Asycnstorage";
-import { PAYMETHOD_MEDIA_BASE_URL, SERVICE_MEDIA_BASE_URL, SPECIALIST_MEDIA_BASE_URL, } from "../../shared/consts/base-url.const";
+import {
+  addDataRiwayat,
+  deleteDataServices,
+  getDataServices,
+} from "../../shared/services/Asycnstorage";
 import { getSpecialist } from "../../shared/services/specialist.service";
 import { getSlot } from "../../shared/services/slot.service";
 import { getPaymentMethod } from "../../shared/services/payment-method.service";
-import { useToast } from "react-native-toast-notifications";
 import UserSessionUtils from "../../shared/utils/user-session.utils";
 import moment from "moment";
 import { transactionService } from "./booking.config";
-export default function BookingScreen({ }) {
-
-  const toast = useToast();
+import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
+export default function BookingScreen({}) {
   const navigation = useNavigation();
   const [ModalDetail, setModalDetail] = useState(false);
   const [TanggalBooking, setTanggalBooking] = useState("");
@@ -42,9 +57,16 @@ export default function BookingScreen({ }) {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const catatanRef = createRef();
 
-  const toggleModal = () => { setModalDetail(!ModalDetail); };
-  const toggleModalPembayaran = () => { setModalPembayaran(!ModalPembayaran); };
-  const selectItem = (item) => { setSelectedItem(item); toggleModal(); };
+  const toggleModal = () => {
+    setModalDetail(!ModalDetail);
+  };
+  const toggleModalPembayaran = () => {
+    setModalPembayaran(!ModalPembayaran);
+  };
+  const selectItem = (item) => {
+    setSelectedItem(item);
+    toggleModal();
+  };
 
   const sendToCheckout = async () => {
     // console.log(selectedTime)
@@ -54,8 +76,10 @@ export default function BookingScreen({ }) {
       return { [`service[${index}]`]: item.serviceId };
     });
 
-
-    const serviceData = services.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+    const serviceData = services.reduce(
+      (acc, curr) => ({ ...acc, ...curr }),
+      {}
+    );
     const serviceIds = selectedService.map((item) => item.serviceId);
     const payload = {
       customerID: userData.customerID,
@@ -79,8 +103,9 @@ export default function BookingScreen({ }) {
     try {
       const result = await transactionService(payload);
       if (result) {
-
-        navigation.navigate('CheckoutScreen', { data: result.midtrans_response })
+        navigation.navigate("CheckoutScreen", {
+          data: result.midtrans_response,
+        });
 
         console.log(result);
 
@@ -91,15 +116,10 @@ export default function BookingScreen({ }) {
         setSelectedSpesialisName(null);
         setTanggalBooking("");
       } else {
-
       }
-
-
     } catch (error) {
       console.log(error);
-
     }
-
   };
 
   const getDataUser = async () => {
@@ -108,14 +128,11 @@ export default function BookingScreen({ }) {
     Print_r(userData);
   };
 
-
-
   const fetchDataRiwayat = async () => {
     const allData = await getDataServices();
     setSelectedService(allData || []);
-    fetchDataRiwayat2()
+    fetchDataRiwayat2();
   };
-
 
   const fetchDataRiwayat2 = async () => {
     const allData = await getDataServices();
@@ -124,7 +141,7 @@ export default function BookingScreen({ }) {
 
   // Fungsi untuk menghapus layanan
   const onDeleteServices = (services) => {
-    deleteDataServices(services.serviceId, toast);
+    deleteDataServices(services.serviceId);
     fetchDataRiwayat(); // Memanggil fetchDataRiwayat setelah penghapusan
   };
   useFocusEffect(
@@ -164,19 +181,17 @@ export default function BookingScreen({ }) {
           barStyle={"dark-content"}
           backgroundColor={"white"}
         />
-        <HeaderTop title={"Booking Layanan"} route={'HomeScreen'} />
+        <HeaderTop title={"Booking Layanan"} route={"HomeScreen"} />
         <ScrollView>
           <View style={styles.contentContainer}>
             <View style={styles.jenisLayananTambah_Container}>
               <Text style={FontStyle.Manrope_Bold_14}>Jenis Layanan</Text>
               <TouchableOpacity
                 style={styles.TambahStyle}
-                onPress={() =>
-                  navigation.navigate("ServicesScreen")
+                onPress={
+                  () => navigation.navigate("ServicesScreen")
                   // Print_r(prevService)
                 }
-
-
               >
                 <Image style={styles.btnPlus} source={ICONS.icon_plus} />
                 <Text style={FontStyle.Manrope_Medium_14_Cyan}>Tambah</Text>
@@ -196,7 +211,7 @@ export default function BookingScreen({ }) {
                         <View style={styles.kategoriBox_Left}>
                           <Image
                             source={{
-                              uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                              uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
                             }}
                             style={styles.kategoriImage}
                           />
@@ -222,9 +237,7 @@ export default function BookingScreen({ }) {
                         <View style={styles.ketegoriBox_Right}>
                           <TouchableOpacity
                             style={styles.plusminus_style}
-                            onPress={() =>
-                              onDeleteServices(item)
-                            }
+                            onPress={() => onDeleteServices(item)}
                           >
                             <Image
                               source={ICONS.icon_minus}
@@ -288,7 +301,7 @@ export default function BookingScreen({ }) {
                       >
                         <Image
                           source={{
-                            uri: `${SPECIALIST_MEDIA_BASE_URL}${item.img}`,
+                            uri: `${MEDIA_BASE_URL}${item.img}`,
                           }}
                           style={styles.spesialisPhotos_Style}
                         />
@@ -327,7 +340,9 @@ export default function BookingScreen({ }) {
                     style={{
                       ...styles.KategoriStyle,
                       borderColor:
-                        item.slotId == selectedTime ? COLORS.purple : COLORS.grey,
+                        item.slotId == selectedTime
+                          ? COLORS.purple
+                          : COLORS.grey,
                       backgroundColor:
                         item.slotId == selectedTime
                           ? COLORS.blue_bg
@@ -372,7 +387,7 @@ export default function BookingScreen({ }) {
               <View style={styles.PembayaranImageContainer}>
                 <Image
                   source={{
-                    uri: `${PAYMETHOD_MEDIA_BASE_URL}${selectedPaymentMethod.img}`,
+                    uri: `${MEDIA_BASE_URL}${selectedPaymentMethod.img}`,
                   }}
                   style={styles.PembayaranImage}
                 />

@@ -21,11 +21,8 @@ import React, { useCallback, useState } from "react";
 import { getServiceCategory } from "../../shared/services/service_category";
 import UserSessionUtils from "../../shared/utils/user-session.utils";
 import HomeService from "./home.service";
-import {
-  BANNER_MEDIA_BASE_URL,
-  SERVICE_MEDIA_BASE_URL,
-} from "../../shared/consts/base-url.const";
 import ServicesService from "../../shared/services/services.service";
+import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -50,7 +47,6 @@ export default function HomeScreen() {
 
     wait(2000).then(() => setRefreshing(false));
   }, []);
-
 
   useFocusEffect(
     React.useCallback(() => {
@@ -84,7 +80,6 @@ export default function HomeScreen() {
     }
   };
 
-
   const onGetBanner = () => {
     HomeService.getBanner().then((res) => {
       setBannerData(res.data);
@@ -105,7 +100,12 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView showsVerticalScrollIndicator={false} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
+      >
         <View style={styles.container}>
           <StatusBar
             translucent={false}
@@ -141,7 +141,7 @@ export default function HomeScreen() {
                     <Image
                       key={index}
                       source={{
-                        uri: `${BANNER_MEDIA_BASE_URL}${item.img}`,
+                        uri: `${MEDIA_BASE_URL}${item.img}`,
                       }}
                       style={styles.CardStyle}
                     />
@@ -201,20 +201,25 @@ export default function HomeScreen() {
             <ScrollView showsHorizontalScrollIndicator={false} horizontal>
               {isLoading ? ( // Tampilkan loader jika sedang memuat
                 <View style={[styles.noDataWrapper]}>
-                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>Loading...</Text>
+                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                    Loading...
+                  </Text>
                 </View>
               ) : mostLookedFor.length === 0 ? ( // Tampilkan jika data kosong
                 <View style={[styles.noDataWrapper]}>
                   <Image source={ICONS.icon_nodata} style={styles.icon_empty} />
-                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>There is no data</Text>
+                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                    There is no data
+                  </Text>
                 </View>
-              ) : ( // Jika data tersedia, render item
+              ) : (
+                // Jika data tersedia, render item
                 mostLookedFor.map((item, index) => (
                   <TouchableOpacity key={index} style={styles.kategoriBox}>
                     <View style={styles.kategoriBox_Left}>
                       <Image
                         source={{
-                          uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                          uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
                         }}
                         style={styles.kategoriImage}
                       />
@@ -224,7 +229,9 @@ export default function HomeScreen() {
                         <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
                           {item.serviceCategoryName}
                         </Text>
-                        <Text style={FontStyle.Manrope_Bold_16}>{item.serviceName}</Text>
+                        <Text style={FontStyle.Manrope_Bold_16}>
+                          {item.serviceName}
+                        </Text>
                         <Text
                           style={FontStyle.NunitoSans_Regular_12_grey}
                           numberOfLines={2}
@@ -238,7 +245,9 @@ export default function HomeScreen() {
                         </Text>
 
                         <TouchableOpacity style={styles.buttonBoking}>
-                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>Booking</Text>
+                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>
+                            Booking
+                          </Text>
                         </TouchableOpacity>
                       </View>
                     </View>
@@ -247,7 +256,6 @@ export default function HomeScreen() {
               )}
             </ScrollView>
           </View>
-
         </View>
       </ScrollView>
     </SafeAreaView>

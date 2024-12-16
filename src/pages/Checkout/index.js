@@ -24,8 +24,6 @@ import {
   formatRupiah,
   Print_r,
 } from "../../shared/helper/helper";
-import { PAYMETHOD_MEDIA_BASE_URL, SERVICE_MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
-import ICONS from "../../shared/consts/icon.const";
 import { getTransactionByNymber } from "../../shared/services/transaction.service";
 
 export default function CheckoutScreen({ route }) {
@@ -33,9 +31,7 @@ export default function CheckoutScreen({ route }) {
   const getData = route.params.data;
   const [transactionData, setTransactionData] = useState({});
 
-
   const onGetTransaction = async () => {
-
     if (getData.order_id) {
       getTransactionByNymber(getData.order_id).then((res) => {
         if (res) {
@@ -43,17 +39,13 @@ export default function CheckoutScreen({ route }) {
           Print_r(res.data); // Gunakan res.data langsung
         }
       });
-
-
-    };
-  }
-
+    }
+  };
 
   useFocusEffect(
     React.useCallback(() => {
       onGetTransaction();
       console.log("Route Params:", route.params);
-
     }, [getData])
   );
 
@@ -71,13 +63,13 @@ export default function CheckoutScreen({ route }) {
                   <CheckoutContainerVertical
                     title={"Tanggal"}
                     label={
-                      transactionData.length > 0 && transactionData[0].bookingDate
-                        ? convertToIndonesianDate(transactionData[0].bookingDate)
+                      transactionData.length > 0 &&
+                      transactionData[0].bookingDate
+                        ? convertToIndonesianDate(
+                            transactionData[0].bookingDate
+                          )
                         : "Invalid Date"
                     }
-
-
-
                   />
                   <CheckoutContainerVertical
                     title={"Waktu"}
@@ -87,13 +79,12 @@ export default function CheckoutScreen({ route }) {
                   <CheckoutContainerVertical
                     title={"Spesialis"}
                     label={
-                      transactionData.length > 0 && transactionData[0].specialistName
+                      transactionData.length > 0 &&
+                      transactionData[0].specialistName
                         ? transactionData[0].specialistName
                         : "Unknown"
                     }
-
                   />
-
                 </View>
                 <LineHorizontal isSolid={true} />
 
@@ -106,15 +97,17 @@ export default function CheckoutScreen({ route }) {
                   Layanan
                 </Text>
 
-                {transactionData.length > 0 && transactionData[0].service && transactionData[0].service.map((item, index) => (
-                  <CheckoutContainerHorizontal
-                    key={index}
-                    title={item.serviceName || "Unknown Service"}
-                    label={item.price ? formatRupiah(item.price) : "Unknown Price"}
-                  />
-                ))}
-
-
+                {transactionData.length > 0 &&
+                  transactionData[0].service &&
+                  transactionData[0].service.map((item, index) => (
+                    <CheckoutContainerHorizontal
+                      key={index}
+                      title={item.serviceName || "Unknown Service"}
+                      label={
+                        item.price ? formatRupiah(item.price) : "Unknown Price"
+                      }
+                    />
+                  ))}
 
                 <LineHorizontal />
 
@@ -125,7 +118,6 @@ export default function CheckoutScreen({ route }) {
                       ? formatRupiah(transactionData[0].subtotal)
                       : "Unknown"
                   }
-
                 />
 
                 <LineHorizontal
@@ -148,7 +140,8 @@ export default function CheckoutScreen({ route }) {
                   </View>
                   <View style={styles.pembayaranDetail}>
                     <Text style={FontStyle.Manrope_Bold_14}>
-                      {transactionData.length > 0 && transactionData[0].paymentMethod
+                      {transactionData.length > 0 &&
+                      transactionData[0].paymentMethod
                         ? transactionData[0].paymentMethod
                         : "Unknown"}
                     </Text>
@@ -157,8 +150,6 @@ export default function CheckoutScreen({ route }) {
                         ? getData.va_numbers[0].va_number
                         : "Nomor Tidak Tersedia"}
                     </Text>
-
-
                   </View>
                   <TouchableOpacity
                     style={styles.pembayaranSalin}

@@ -24,10 +24,7 @@ import { pickImage } from "./account.config.js";
 import UserSessionUtils from "../../shared/utils/user-session.utils.js";
 import { onUpdateProfile } from "../../shared/services/account.service.js";
 import { getFontSize } from "../../shared/helper/helper.js";
-import { useToast } from "react-native-toast-notifications";
-import { CustomToast } from "../../shared/component/Toast/CustomToast.js";
 export default function AccountScreen() {
-  const toast = useToast();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [Nama, setNama] = useState("");
@@ -94,23 +91,21 @@ export default function AccountScreen() {
     pickImage(setFoto);
   };
 
-  const handleToast = () => {
-    CustomToast(toast, "Berhasil di tambahkan");
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-
       <ScrollView>
         <View style={styles.container}>
           <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
-          <HeaderTop title={"Akun"} route={'HomeScreen'} />
+          <HeaderTop title={"Akun"} route={"HomeScreen"} />
           <View style={styles.ProfileContainer}>
             <Image
               source={Foto ? { uri: Foto } : ICONS.spesialis1}
               style={styles.fotoProfil}
             />
-            <Text style={FontStyle.NunitoSans_Regular_12_grey} onPress={updateImg}>
+            <Text
+              style={FontStyle.NunitoSans_Regular_12_grey}
+              onPress={updateImg}
+            >
               Ubah Profil
             </Text>
           </View>
@@ -136,7 +131,9 @@ export default function AccountScreen() {
                 />
               </View>
               <View>
-                <Text style={FontStyle.NunitoSans_Regular_14}>Nama Belakang</Text>
+                <Text style={FontStyle.NunitoSans_Regular_14}>
+                  Nama Belakang
+                </Text>
                 <CustomTextInput
                   input={userData.lastName}
                   setInput={(value) => onChangeValue("lastName", value)}
@@ -152,7 +149,6 @@ export default function AccountScreen() {
                   setInput={setTelephone}
                   nameRef={TelephoneInputRef}
                   placeHolder={"Kata sandi"}
-
                 />
               </View>
             </>
@@ -172,7 +168,6 @@ export default function AccountScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-
     </SafeAreaView>
   );
 }

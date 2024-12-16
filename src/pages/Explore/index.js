@@ -16,16 +16,20 @@ import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah } from "../../shared/helper/helper";
 import ServicesService from "../../shared/services/services.service";
 import { getServiceCategory } from "../../shared/services/service_category";
-import { SERVICE_MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
-import { useToast } from "react-native-toast-notifications";
 import ICONS from "../../shared/consts/icon.const";
-import { responsiveScreenHeight, responsiveScreenWidth } from "react-native-responsive-dimensions";
-import { addDataServices, deleteDataServices } from "../../shared/services/Asycnstorage";
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from "react-native-responsive-dimensions";
+import {
+  addDataServices,
+  deleteDataServices,
+} from "../../shared/services/Asycnstorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
 export default function ExploreScreen({ route }) {
   const params = route?.params?.data || null;
-  const toast = useToast();
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [ModalDetail, setModalDetail] = useState(false);
@@ -66,14 +70,13 @@ export default function ExploreScreen({ route }) {
     });
   };
 
-
   const onGetServiceCategory = () => {
     getServiceCategory().then((data) => {
       setIsLoading(false);
       let selectedCategoryLabel = params
         ? data.data.find((item) => {
-          return item.serviceCategoryId === params;
-        })?.serviceCategoryName
+            return item.serviceCategoryId === params;
+          })?.serviceCategoryName
         : data.data[0].serviceCategoryName;
 
       setServiceCategory(data.data);
@@ -96,23 +99,17 @@ export default function ExploreScreen({ route }) {
     });
   };
 
-
   const isProductLiked = (serviceId) => {
     return selectedService.some((item) => item.serviceId === serviceId);
   };
 
   // Fungsi untuk menambahkan produk ke dalam liked
   const onSelectServices = (services) => {
-
-    addDataServices(services, toast);
-
-
-
-    navigation.navigate('BookingScreen')
+    addDataServices(services);
+    navigation.navigate("BookingScreen");
   };
   const reset = async () => {
     await AsyncStorage.removeItem("selectedServices");
-
   };
 
   useFocusEffect(
@@ -183,7 +180,7 @@ export default function ExploreScreen({ route }) {
                   <View style={styles.kategoriBox_Left}>
                     <Image
                       source={{
-                        uri: `${SERVICE_MEDIA_BASE_URL}${item.img[0].img}`,
+                        uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
                       }}
                       style={styles.kategoriImage}
                     />
@@ -210,9 +207,7 @@ export default function ExploreScreen({ route }) {
 
                       <TouchableOpacity
                         style={styles.buttonBoking}
-                        onPress={() =>
-                          onSelectServices(item)
-                        }
+                        onPress={() => onSelectServices(item)}
                       >
                         <Text style={FontStyle.Manrope_Bold_10_Cyan}>
                           Booking
@@ -224,15 +219,21 @@ export default function ExploreScreen({ route }) {
               ))}
 
             {!isLoading && servicesData.length <= 0 && (
-              <View style={{
-                alignItems: 'center',
-                width: responsiveScreenWidth(94),
-                height: responsiveScreenHeight(60),
-                justifyContent: 'center',
-
-              }}>
-                <Image source={ICONS.icon_nodata_bg} style={styles.noDataStyle} />
-                <Text style={FontStyle.NunitoSans_Regular_12_grey}>There is no data...</Text>
+              <View
+                style={{
+                  alignItems: "center",
+                  width: responsiveScreenWidth(94),
+                  height: responsiveScreenHeight(60),
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={ICONS.icon_nodata_bg}
+                  style={styles.noDataStyle}
+                />
+                <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                  There is no data...
+                </Text>
               </View>
             )}
             {isLoading && (
