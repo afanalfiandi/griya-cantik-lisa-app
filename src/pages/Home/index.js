@@ -23,6 +23,7 @@ import UserSessionUtils from "../../shared/utils/user-session.utils";
 import HomeService from "./home.service";
 import ServicesService from "../../shared/services/services.service";
 import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
+import { addDataServices } from "../../shared/services/Asycnstorage";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
@@ -35,6 +36,11 @@ export default function HomeScreen() {
 
   const onFavourite = async () => {
     navigation.navigate("FavouriteScreen");
+  };
+
+  const onSelectServices = (services) => {
+    addDataServices(services);
+    navigation.navigate("BookingScreen");
   };
 
   const [refreshing, setRefreshing] = useState(false); // refresh refreshcontrol
@@ -244,7 +250,12 @@ export default function HomeScreen() {
                           {formatRupiah(item.price)}
                         </Text>
 
-                        <TouchableOpacity style={styles.buttonBoking}>
+                        <TouchableOpacity
+                          style={styles.buttonBoking}
+                          onPress={() => {
+                            onSelectServices(item);
+                          }}
+                        >
                           <Text style={FontStyle.Manrope_Bold_10_Cyan}>
                             Booking
                           </Text>
