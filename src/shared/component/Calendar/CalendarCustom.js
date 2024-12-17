@@ -1,9 +1,20 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  Image,
+  ScrollView,
+} from "react-native";
 import moment from "moment";
 import ICONS from "../../consts/icon.const";
 import { styles } from "./style";
 import FontStyle from "../../style/font.style";
+import {
+  responsiveScreenHeight,
+  responsiveScreenWidth,
+} from "react-native-responsive-dimensions";
 moment.locale("id");
 
 const bulanIndo = [
@@ -94,42 +105,56 @@ const CustomCalendar = ({ setTanggal }) => {
         </TouchableOpacity>
       </View>
 
-      <FlatList
+      <View
+        style={{
+          width: responsiveScreenWidth(100),
+          marginBottom: responsiveScreenHeight(2),
+          paddingHorizontal: responsiveScreenWidth(3),
+        }}
+      >
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+          {generateDaysInMonth().map((item, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleDatePress(item)}
+              disabled={item.isDisabled}
+              style={[
+                styles.dateContainer,
+                item.isDisabled && styles.disabledDate,
+                item.date === focusedDate && styles.focusedDate,
+              ]}
+            >
+              <Text
+                style={[
+                  FontStyle.NunitoSans_Regular_12_grey,
+                  item.isDisabled && styles.disabledText,
+                  item.date === focusedDate && styles.focusedText,
+                ]}
+              >
+                {item.dayName}
+              </Text>
+              <Text
+                style={[
+                  FontStyle.Manrope_Bold_24,
+                  item.isDisabled && styles.disabledText,
+                  item.date === focusedDate && styles.focusedText,
+                ]}
+              >
+                {item.dayNumber}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+      {/* <FlatList
         data={generateDaysInMonth()}
         keyExtractor={(item) => item.date}
         horizontal
         showsHorizontalScrollIndicator={false}
         renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => handleDatePress(item)}
-            disabled={item.isDisabled}
-            style={[
-              styles.dateContainer,
-              item.isDisabled && styles.disabledDate,
-              item.date === focusedDate && styles.focusedDate,
-            ]}
-          >
-            <Text
-              style={[
-                FontStyle.NunitoSans_Regular_12_grey,
-                item.isDisabled && styles.disabledText,
-                item.date === focusedDate && styles.focusedText,
-              ]}
-            >
-              {item.dayName}
-            </Text>
-            <Text
-              style={[
-                FontStyle.Manrope_Bold_24,
-                item.isDisabled && styles.disabledText,
-                item.date === focusedDate && styles.focusedText,
-              ]}
-            >
-              {item.dayNumber}
-            </Text>
-          </TouchableOpacity>
+          
         )}
-      />
+      /> */}
     </View>
   );
 };
