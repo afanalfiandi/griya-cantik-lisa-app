@@ -1,4 +1,5 @@
 import {
+  Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -101,18 +102,16 @@ export default function BookingScreen({}) {
     try {
       const result = await transactionService(payload);
       if (result) {
-        console.log("result => ", result);
-        setIsLoading(false);
-        navigation.navigate("CheckoutScreen", {
-          data: result,
-        });
-
         setSelectedPaymentMethod([]);
         setSelectedService([]);
         setSelectedTime(null);
         setSelectedSpesialisID(null);
         setSelectedSpesialisName(null);
         setTanggalBooking("");
+        setIsLoading(false);
+        navigation.navigate("CheckoutScreen", {
+          data: result,
+        });
       }
     } catch (error) {
       console.error(error);

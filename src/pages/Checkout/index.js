@@ -25,17 +25,28 @@ import {
   Print_r,
 } from "../../shared/helper/helper";
 import { getTransactionByNymber } from "../../shared/services/transaction.service";
+import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
 export default function CheckoutScreen({ route }) {
   const navigation = useNavigation();
   const getData = route.params.data;
   const [transactionData, setTransactionData] = useState({});
+  const [bankImg, setBankImg] = useState("");
 
   const onGetTransaction = async () => {
-    if (getData.midtrans_response.order_id) {
+    if (getData) {
       getTransactionByNymber(getData.midtrans_response.order_id).then((res) => {
-        if (res) {
+        if (res && res.data && res.data.length > 0) {
           setTransactionData(res.data[0]);
+          if (getData.midtrans_response.va_numbers[0].bank === "bca") {
+            setBankImg("bca.png");
+          } else if (getData.midtrans_response.va_numbers[0].bank === "bni") {
+            setBankImg("bni.png");
+          } else if (getData.midtrans_response.va_numbers[0].bank === "bri") {
+            setBankImg("bri.png");
+          } else {
+            setBankImg("permata.png");
+          }
         }
       });
     }
@@ -122,15 +133,12 @@ export default function CheckoutScreen({ route }) {
 
                 <View style={styles.Pembayaran}>
                   <View style={styles.PembayaranImg}>
-                    {/* <Image
+                    <Image
                       source={{
-                        uri: `${PAYMETHOD_MEDIA_BASE_URL}${transactionData && transactionData[0].paymentMethod
-                        ? transactionData[0].paymentMethod
-                        : "Unknown"}`,
+                        uri: `${MEDIA_BASE_URL}${bankImg}`,
                       }}
-
                       style={styles.payImgStyle}
-                    /> */}
+                    />
                   </View>
                   <View style={styles.pembayaranDetail}>
                     <Text style={FontStyle.Manrope_Bold_14}>
