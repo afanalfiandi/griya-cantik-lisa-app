@@ -11,6 +11,7 @@ import PaymentScreen from "../../pages/Payment";
 import FavouriteScreen from "../../pages/Favourite";
 import HomeScreen from "../../pages/Home";
 import SplashScreen from "../../pages/Splash";
+import InvoiceScreen from "../../pages/Invoice";
 
 const tab = [
   {
@@ -108,6 +109,14 @@ const tab = [
   {
     name: "FavouriteScreen",
     component: FavouriteScreen,
+    title: "",
+    headerShown: false,
+    headerTransparent: true,
+    hideTabBar: true,
+  },
+  {
+    name: "InvoiceScreen",
+    component: InvoiceScreen,
     title: "",
     headerShown: false,
     headerTransparent: true,

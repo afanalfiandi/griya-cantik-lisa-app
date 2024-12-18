@@ -15,11 +15,13 @@ import {
   responsiveScreenWidth,
 } from "react-native-responsive-dimensions";
 import ButtonPurple from "../../Button/ButtonPurple.js";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { formatRupiah } from "../../../helper/helper.js";
 import { MEDIA_BASE_URL } from "../../../consts/base-url.const.js";
+import { addDataServices } from "../../../services/Asycnstorage.js";
 
 const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
+  const navigation = useNavigation();
   const scrollViewRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -39,6 +41,13 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
     const itemWidth = responsiveScreenWidth(100);
     scrollViewRef.current.scrollTo({ x: itemWidth * index, animated: true });
     setActiveIndex(index);
+  };
+
+  const onBoking = (index) => {
+    addDataServices(data)
+   onClose();
+   navigation.navigate('BookingScreen')
+  
   };
 
   useFocusEffect(
@@ -153,7 +162,7 @@ const ModalDetailLayanan = ({ children, visible, onClose, data }) => {
           </View>
 
           <View style={styles.modal_boxContainer_Bottom}>
-            <ButtonPurple title={"Booking"} />
+            <ButtonPurple title={"Booking"} onPress={()=> onBoking()}/>
           </View>
         </View>
       </View>

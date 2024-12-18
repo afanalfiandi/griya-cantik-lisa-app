@@ -27,7 +27,7 @@ import {
 import { getTransactionByNymber } from "../../shared/services/transaction.service";
 import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
-export default function CheckoutScreen({ route }) {
+export default function InvoiceScreen({ route }) {
   const navigation = useNavigation();
   const getData = route.params.data;
   const [transactionData, setTransactionData] = useState({});
@@ -35,7 +35,7 @@ export default function CheckoutScreen({ route }) {
 
   const onGetTransaction = async () => {
     if (getData) {
-      getTransactionByNymber(getData.midtrans_response.order_id).then((res) => {
+      getTransactionByNymber(getData.transactionNumber).then((res) => {
         if (res && res.data && res.data.length > 0) {
           Print_r(res.data[0]);
           Print_r(getData)
@@ -65,7 +65,7 @@ export default function CheckoutScreen({ route }) {
       <View style={styles.container}>
         <StatusBar barStyle={"dark-content"} backgroundColor={"white"} />
 
-        <HeaderTop title={"Booking Checkout"} showButton={false} />
+        <HeaderTop title={"Nota"} showButton={false} />
         <ScrollView>
           <View style={styles.contentContainer}>
             <View style={styles.checkoutBox}>

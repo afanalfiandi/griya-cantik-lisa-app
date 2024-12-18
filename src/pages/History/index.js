@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { getDataRiwayat } from "../../shared/services/Asycnstorage";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import styles from "./style";
 import HeaderTop from "../../shared/component/Header/Header";
 import FontStyle from "../../shared/style/font.style";
@@ -19,6 +19,7 @@ import {
   convertToIndonesianDate,
   formatRupiah,
   getFontSize,
+  Print_r,
 } from "../../shared/helper/helper";
 import { getTransaction } from "../../shared/services/transaction.service";
 import UserSessionUtils from "../../shared/utils/user-session.utils";
@@ -26,7 +27,7 @@ import ICONS from "../../shared/consts/icon.const";
 import { responsiveScreenHeight, responsiveScreenWidth } from "react-native-responsive-dimensions";
 
 export default function HistoryScreen() {
-
+const navigation = useNavigation();
   const [transactionData, setTransactionData] = useState([]);
   const [refreshing, setRefreshing] = useState(false); // refresh refreshcontrol
   const wait = (timeout) => {
@@ -57,6 +58,8 @@ export default function HistoryScreen() {
     getTransaction(customerData.customerID).then((res) => {
       if (res) {
         setTransactionData(res.data);
+
+        Print_r(res.data)
       }
     });
   };
@@ -102,6 +105,8 @@ export default function HistoryScreen() {
                     textAlign: "right",
                     marginTop: getFontSize(20),
                   }}
+
+                  onPress={()=> navigation.navigate('InvoiceScreen', {data: item})}
                 >
                   Lihat Nota
                 </Text>
