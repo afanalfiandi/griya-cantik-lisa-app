@@ -177,86 +177,86 @@ export default function ExploreScreen({ route }) {
           </View>
 
           <View style={styles.KategoriContainer}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-              {!isLoading &&
-                servicesData &&
-                servicesData.map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.kategoriBox}
-                    onPress={() => selectItem(item)}
-                  >
-                    <View style={styles.kategoriBox_Left}>
-                      <Image
-                        source={{
-                          uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
-                        }}
-                        style={styles.kategoriImage}
-                      />
-                    </View>
-                    <View style={styles.ketegoriBox_Right}>
-                      <View style={styles.keterangan_Top}>
-                        <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
-                          {item.serviceCategoryName}
-                        </Text>
-                        <Text style={FontStyle.Manrope_Bold_16}>
-                          {item.serviceName}
-                        </Text>
-                        <Text
-                          style={FontStyle.NunitoSans_Regular_12_grey}
-                          numberOfLines={2}
-                        >
-                          {item.description}
-                        </Text>
-                      </View>
-                      <View style={styles.keterangan_Bot}>
-                        <Text style={FontStyle.NunitoSans_Regular_12_grey}>
-                          {formatRupiah(item.price)}
-                        </Text>
-
-                        <TouchableOpacity
-                          style={styles.buttonBoking}
-                          onPress={() => onSelectServices(item)}
-                        >
-                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>
-                            Booking
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                ))}
-
-              {!isLoading && servicesData.length <= 0 && (
-                <View
-                  style={{
-                    alignItems: "center",
-                    width: responsiveScreenWidth(94),
-                    height: responsiveScreenHeight(60),
-                    justifyContent: "center",
-                  }}
+            {/* <ScrollView showsVerticalScrollIndicator={false}> */}
+            {!isLoading &&
+              servicesData &&
+              servicesData.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.kategoriBox}
+                  onPress={() => selectItem(item)}
                 >
-                  <Image
-                    source={ICONS.icon_nodata_bg}
-                    style={styles.noDataStyle}
-                  />
-                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>
-                    There is no data...
-                  </Text>
-                </View>
-              )}
-              {isLoading && (
-                <View
-                  styles={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text>Loading...</Text>
-                </View>
-              )}
-            </ScrollView>
+                  <View style={styles.kategoriBox_Left}>
+                    <Image
+                      source={{
+                        uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
+                      }}
+                      style={styles.kategoriImage}
+                    />
+                  </View>
+                  <View style={styles.ketegoriBox_Right}>
+                    <View style={styles.keterangan_Top}>
+                      <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
+                        {item.serviceCategoryName}
+                      </Text>
+                      <Text style={FontStyle.Manrope_Bold_16}>
+                        {item.serviceName}
+                      </Text>
+                      <Text
+                        style={FontStyle.NunitoSans_Regular_12_grey}
+                        numberOfLines={2}
+                      >
+                        {item.description}
+                      </Text>
+                    </View>
+                    <View style={styles.keterangan_Bot}>
+                      <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                        {formatRupiah(item.price)}
+                      </Text>
+
+                      <TouchableOpacity
+                        style={styles.buttonBoking}
+                        onPress={() => onSelectServices(item)}
+                      >
+                        <Text style={FontStyle.Manrope_Bold_10_Cyan}>
+                          Booking
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))}
+
+            {!isLoading && servicesData.length <= 0 && (
+              <View
+                style={{
+                  alignItems: "center",
+                  width: responsiveScreenWidth(94),
+                  height: responsiveScreenHeight(60),
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={ICONS.icon_nodata_bg}
+                  style={styles.noDataStyle}
+                />
+                <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                  There is no data...
+                </Text>
+              </View>
+            )}
+            {isLoading && (
+              <View
+                styles={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text>Loading...</Text>
+              </View>
+            )}
+            {/* </ScrollView> */}
           </View>
         </View>
 
