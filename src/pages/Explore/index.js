@@ -128,142 +128,144 @@ export default function ExploreScreen({ route }) {
   );
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <StatusBar
-          translucent={false}
-          barStyle={"dark-content"}
-          backgroundColor={"white"}
-        />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.container}>
+          <StatusBar
+            translucent={false}
+            barStyle={"dark-content"}
+            backgroundColor={"white"}
+          />
 
-        <View style={styles.KategoriListContainer}>
-          <Text style={FontStyle.Manrope_Bold_16}>{selectedCategoryLabel}</Text>
-          <View style={styles.KategoriList_Horizontal}>
-            <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-              {serviceCategory &&
-                serviceCategory.map((item, index) => (
+          <View style={styles.KategoriListContainer}>
+            <Text style={FontStyle.Manrope_Bold_16}>{selectedCategoryLabel}</Text>
+            <View style={styles.KategoriList_Horizontal}>
+              <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+                {serviceCategory &&
+                  serviceCategory.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={{
+                        ...styles.KategoriStyle,
+                        borderColor:
+                          selectedCategory === item.serviceCategoryId
+                            ? COLORS.purple
+                            : COLORS.grey,
+                        backgroundColor:
+                          selectedCategory === item.serviceCategoryId
+                            ? COLORS.blue_bg
+                            : COLORS.white,
+                      }}
+                      onPress={() => {
+                        setSelectedCategory(item.serviceCategoryId);
+                        setSelectedCategoryLabel(item.serviceCategoryName);
+                        getServiceByCategory(item.serviceCategoryId);
+                      }}
+                    >
+                      <Text
+                        style={
+                          item.isFocused
+                            ? FontStyle.Manrope_Medium_12_Cyan
+                            : FontStyle.Manrope_Medium_12
+                        }
+                      >
+                        {item.serviceCategoryName}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+              </ScrollView>
+            </View>
+          </View>
+
+          <View style={styles.KategoriContainer}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              {!isLoading &&
+                servicesData &&
+                servicesData.map((item, index) => (
                   <TouchableOpacity
                     key={index}
-                    style={{
-                      ...styles.KategoriStyle,
-                      borderColor:
-                        selectedCategory === item.serviceCategoryId
-                          ? COLORS.purple
-                          : COLORS.grey,
-                      backgroundColor:
-                        selectedCategory === item.serviceCategoryId
-                          ? COLORS.blue_bg
-                          : COLORS.white,
-                    }}
-                    onPress={() => {
-                      setSelectedCategory(item.serviceCategoryId);
-                      setSelectedCategoryLabel(item.serviceCategoryName);
-                      getServiceByCategory(item.serviceCategoryId);
-                    }}
+                    style={styles.kategoriBox}
+                    onPress={() => selectItem(item)}
                   >
-                    <Text
-                      style={
-                        item.isFocused
-                          ? FontStyle.Manrope_Medium_12_Cyan
-                          : FontStyle.Manrope_Medium_12
-                      }
-                    >
-                      {item.serviceCategoryName}
-                    </Text>
+                    <View style={styles.kategoriBox_Left}>
+                      <Image
+                        source={{
+                          uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
+                        }}
+                        style={styles.kategoriImage}
+                      />
+                    </View>
+                    <View style={styles.ketegoriBox_Right}>
+                      <View style={styles.keterangan_Top}>
+                        <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
+                          {item.serviceCategoryName}
+                        </Text>
+                        <Text style={FontStyle.Manrope_Bold_16}>
+                          {item.serviceName}
+                        </Text>
+                        <Text
+                          style={FontStyle.NunitoSans_Regular_12_grey}
+                          numberOfLines={2}
+                        >
+                          {item.description}
+                        </Text>
+                      </View>
+                      <View style={styles.keterangan_Bot}>
+                        <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                          {formatRupiah(item.price)}
+                        </Text>
+
+                        <TouchableOpacity
+                          style={styles.buttonBoking}
+                          onPress={() => onSelectServices(item)}
+                        >
+                          <Text style={FontStyle.Manrope_Bold_10_Cyan}>
+                            Booking
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
                   </TouchableOpacity>
                 ))}
+
+              {!isLoading && servicesData.length <= 0 && (
+                <View
+                  style={{
+                    alignItems: "center",
+                    width: responsiveScreenWidth(94),
+                    height: responsiveScreenHeight(60),
+                    justifyContent: "center",
+                  }}
+                >
+                  <Image
+                    source={ICONS.icon_nodata_bg}
+                    style={styles.noDataStyle}
+                  />
+                  <Text style={FontStyle.NunitoSans_Regular_12_grey}>
+                    There is no data...
+                  </Text>
+                </View>
+              )}
+              {isLoading && (
+                <View
+                  styles={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text>Loading...</Text>
+                </View>
+              )}
             </ScrollView>
           </View>
         </View>
 
-        <View style={styles.KategoriContainer}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {!isLoading &&
-              servicesData &&
-              servicesData.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.kategoriBox}
-                  onPress={() => selectItem(item)}
-                >
-                  <View style={styles.kategoriBox_Left}>
-                    <Image
-                      source={{
-                        uri: `${MEDIA_BASE_URL}${item.img[0].img}`,
-                      }}
-                      style={styles.kategoriImage}
-                    />
-                  </View>
-                  <View style={styles.ketegoriBox_Right}>
-                    <View style={styles.keterangan_Top}>
-                      <Text style={FontStyle.NunitoSans_Regular_16_cyan}>
-                        {item.serviceCategoryName}
-                      </Text>
-                      <Text style={FontStyle.Manrope_Bold_16}>
-                        {item.serviceName}
-                      </Text>
-                      <Text
-                        style={FontStyle.NunitoSans_Regular_12_grey}
-                        numberOfLines={2}
-                      >
-                        {item.description}
-                      </Text>
-                    </View>
-                    <View style={styles.keterangan_Bot}>
-                      <Text style={FontStyle.NunitoSans_Regular_12_grey}>
-                        {formatRupiah(item.price)}
-                      </Text>
-
-                      <TouchableOpacity
-                        style={styles.buttonBoking}
-                        onPress={() => onSelectServices(item)}
-                      >
-                        <Text style={FontStyle.Manrope_Bold_10_Cyan}>
-                          Booking
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))}
-
-            {!isLoading && servicesData.length <= 0 && (
-              <View
-                style={{
-                  alignItems: "center",
-                  width: responsiveScreenWidth(94),
-                  height: responsiveScreenHeight(60),
-                  justifyContent: "center",
-                }}
-              >
-                <Image
-                  source={ICONS.icon_nodata_bg}
-                  style={styles.noDataStyle}
-                />
-                <Text style={FontStyle.NunitoSans_Regular_12_grey}>
-                  There is no data...
-                </Text>
-              </View>
-            )}
-            {isLoading && (
-              <View
-                styles={{
-                  flex: 1,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <Text>Loading...</Text>
-              </View>
-            )}
-          </ScrollView>
-        </View>
-      </View>
-
-      <ModalDetailLayanan
-        visible={ModalDetail}
-        onClose={toggleModal}
-        data={selectedItem}
-      />
+        <ModalDetailLayanan
+          visible={ModalDetail}
+          onClose={toggleModal}
+          data={selectedItem}
+        />
+      </ScrollView>
     </SafeAreaView>
   );
 }
