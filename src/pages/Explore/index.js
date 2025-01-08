@@ -13,7 +13,7 @@ import COLORS from "../../shared/consts/colors.const";
 import React, { useState } from "react";
 import ModalDetailLayanan from "../../shared/component/Modal/ModalDetail/ModalDetail";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { formatRupiah } from "../../shared/helper/helper";
+import { formatRupiah, Print_r } from "../../shared/helper/helper";
 import ServicesService from "../../shared/services/services.service";
 import { getServiceCategory } from "../../shared/services/service_category";
 import ICONS from "../../shared/consts/icon.const";
@@ -29,7 +29,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MEDIA_BASE_URL } from "../../shared/consts/base-url.const";
 
 export default function ExploreScreen({ route }) {
-  const params = route?.params?.data || null;
+  let params = route?.params?.data || null;
+  let labels = route?.params?.label || null;
   const navigation = useNavigation();
   const [isLoading, setIsLoading] = useState(false);
   const [ModalDetail, setModalDetail] = useState(false);
@@ -49,6 +50,9 @@ export default function ExploreScreen({ route }) {
   };
 
   const initData = () => {
+
+    params = route?.params?.data || null;
+    labels = route?.params?.label || null;
     // Ambil kategori pertama sebagai default
     getServiceCategory().then((data) => {
       setIsLoading(false);
@@ -61,11 +65,10 @@ export default function ExploreScreen({ route }) {
 
         // Setel default kategori
         setServiceCategory(data.data);
-        setSelectedCategory(defaultCategoryId);
-        setSelectedCategoryLabel(defaultCategoryName);
-
+        setSelectedCategory(params ? params : defaultCategoryId);
+        setSelectedCategoryLabel(labels ? labels : defaultCategoryName);
         // Muat data layanan berdasarkan kategori pertama
-        getServiceByCategory(defaultCategoryId);
+        getServiceByCategory(params ? params : defaultCategoryId);
       }
     });
   };
@@ -75,8 +78,8 @@ export default function ExploreScreen({ route }) {
       setIsLoading(false);
       let selectedCategoryLabel = params
         ? data.data.find((item) => {
-            return item.serviceCategoryId === params;
-          })?.serviceCategoryName
+          return item.serviceCategoryId === params;
+        })?.serviceCategoryName
         : data.data[0].serviceCategoryName;
 
       setServiceCategory(data.data);
@@ -109,13 +112,18 @@ export default function ExploreScreen({ route }) {
     navigation.navigate("BookingScreen");
   };
   const reset = async () => {
+    // params = null;
+    // labels = null;
     await AsyncStorage.removeItem("selectedServices");
+    setSelectedCategoryLabel('')
+    setSelectedCategory('')
   };
 
   useFocusEffect(
     React.useCallback(() => {
       reset();
       initData();
+      console.log('params', params, labels)
     }, [params])
   );
   return (

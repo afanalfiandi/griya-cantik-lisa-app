@@ -18,14 +18,20 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.alfiandiafan.griya_cantik_lisa"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-font"],
+    "plugins": [
+      "expo-font"
+    ],
     "extra": {
-      "BASE_URL": "https://griya-cantik-lisa.my.id"
+      "BASE_URL": "https://griya-cantik-lisa.my.id",
+      "eas": {
+        "projectId": "3ac200d0-7c0f-405b-9464-f0bc3dd7753f"
+      }
     }
   }
 }

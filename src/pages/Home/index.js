@@ -168,6 +168,7 @@ export default function HomeScreen() {
                     onPress={() =>
                       navigation.navigate("ExploreScreen", {
                         data: item.serviceCategoryId,
+                        label: item.serviceCategoryName
                       })
                     }
                   />
