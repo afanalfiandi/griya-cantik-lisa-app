@@ -8,8 +8,8 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
-    // padding: 10,
-    // height: responsiveScreenHeight(18),
+    padding: 10,
+    height: responsiveScreenHeight(18),
   },
   navigation: {
     flexDirection: "row",
@@ -38,14 +38,11 @@ export const styles = StyleSheet.create({
   dateContainer: {
     alignItems: "center",
     justifyContent: "center",
-    marginHorizontal: responsiveScreenWidth(1),
-    // marginRight: responsiveScreenWidth(2),
+    marginHorizontal: 10,
     backgroundColor: COLORS.grey_form,
-    // height: responsiveScreenHeight(10),
-    width: responsiveScreenWidth(12),
-    borderRadius: getFontSize(10),
-    paddingVertical: 10,
-    marginBottom: 5
+    height: responsiveScreenHeight(10),
+    width: responsiveScreenWidth(15),
+    borderRadius: responsiveScreenWidth(100),
   },
   dayName: {
     fontSize: 14,
